@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
+import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:lipple/widgets/square_category_button.dart';
 
@@ -18,6 +19,22 @@ class _HomePageState extends State<HomePage> {
     Category('교통수단', Image.asset('assets/images/transport.png')),
     Category('반려동물', Image.asset('assets/images/pet.png')),
     Category('문화, 예술', Image.asset('assets/images/art.png')),
+  ];
+
+  static List<SentencePractice> allSentences = <SentencePractice>[
+    SentencePractice(
+      id: '0',
+      title: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.',
+      category: Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
+    ),
+    SentencePractice(
+        id: '1',
+        title: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.',
+        category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
+    SentencePractice(
+        id: '2',
+        title: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.',
+        category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
   ];
 
   final String categoryDetailsPath = '/category/specific';
@@ -162,25 +179,36 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
               children: [
-                const Padding(
+                Padding(
                   padding:
-                      EdgeInsets.only(bottom: 8.0, left: 15.0, right: 15.0),
+                      const EdgeInsets.only(bottom: 8.0, left: 15.0, right: 15.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         '오늘은 어떤 주제를 해볼까요?',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
-                      Text(
-                        '전체보기 >',
-                        style: TextStyle(
-                          color: Color(0xFF959595),
-                          fontSize: 13,
+                      SizedBox(
+                        height: 20,
+                        child: TextButton(
+                          onPressed: () => context.go('/category'),
+                          style: TextButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text(
+                            '전체보기 >',
+                            style: TextStyle(
+                              color: Color(0xFF959595),
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -202,6 +230,224 @@ class _HomePageState extends State<HomePage> {
                     }).toList(),
                   ),
                 ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                const Padding(
+                  padding:
+                      EdgeInsets.only(bottom: 8.0, left: 15.0, right: 15.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '랜덤으로 학습해요!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF1FC368),
+                              surfaceTintColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.white),
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    color: Color(0x3A1FC368), width: 0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18),
+                              shadowColor: const Color(0x3A1FC368),
+                              elevation: 3,
+                            ),
+                            onPressed: () {},
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.shuffle_rounded,
+                                  color: Colors.black,
+                                  size: 28,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(
+                                        '전체 랜덤',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              surfaceTintColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.white),
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    color: Color(0x3A1FC368), width: 0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18),
+                              shadowColor: const Color(0x3A1FC368),
+                              elevation: 3,
+                            ),
+                            onPressed: () {},
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow,
+                                  size: 28,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 5),
+                                      child: Text(
+                                        '즐겨찾기 랜덤',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: 8.0, left: 15.0, right: 15.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '즐겨찾기한 문장들이에요!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                        child: TextButton(
+                          onPressed: () => context.go('/bookmark'),
+                          style: TextButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text(
+                            '전체보기 >',
+                            style: TextStyle(
+                              color: Color(0xFF959595),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    children:
+                        allSentences.map((SentencePractice sentencePractice) {
+                      return Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Color(0xFFC1C9BF)),
+                          ),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            sentencePractice.category?.title ?? '',
+                            style: const TextStyle(
+                                fontSize: 11, color: Color(0xFF078043)),
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Text(
+                              sentencePractice.title,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 17,
+                            color: Colors.grey,
+                          ),
+                          onTap: () {},
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
               ],
             ),
           ),
