@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 
@@ -15,6 +16,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
     const SentencePractice(id: '1', title: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.'),
     const SentencePractice(id: '2', title: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.'),
   ];
+
+  final String practicePath = '/bookmark/practice';
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +93,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                         size: 17,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () => context.go(practicePath),
                     ),
                   );
                 }).toList(),

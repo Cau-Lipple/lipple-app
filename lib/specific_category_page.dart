@@ -29,7 +29,7 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
           color: Colors.white, //색변경
         ),
         title: const Text(
-          '문장연습',
+          '문장 연습',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

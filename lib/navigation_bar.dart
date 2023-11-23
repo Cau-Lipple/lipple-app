@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:lipple/bookmark_page.dart';
 import 'package:lipple/home_page.dart';
 import 'package:lipple/interfaces/category_interface.dart';
+import 'package:lipple/practice_page.dart';
 import 'package:lipple/specific_category_page.dart';
 import 'package:lipple/utils/custom_icons.dart';
 import 'package:lipple/entire_category_page.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _rootNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'root');
 final _shellNavigatorHomeKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellHome');
 final _shellNavigatorCategoryKey =
@@ -18,7 +20,7 @@ final _shellNavigatorSettingsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellSettings');
 
 final goRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/',
   // * Passing a navigatorKey causes an issue on hot reload:
   // * https://github.com/flutter/flutter/issues/113757#issuecomment-1518421380
   // * However it's still necessary otherwise the navigator pops back to
@@ -37,7 +39,7 @@ final goRouter = GoRouter(
           navigatorKey: _shellNavigatorHomeKey,
           routes: [
             GoRoute(
-              path: '/home',
+              path: '/',
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: HomePage(),
               ),
@@ -59,6 +61,14 @@ final goRouter = GoRouter(
                     final Category category = state.extra as Category;
                     return SpecificCategoryPage(category: category);
                   },
+                  routes: [
+                    GoRoute(
+                      path: 'practice',
+                      pageBuilder: (context, state) => const NoTransitionPage(
+                        child: PracticePage(),
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),
@@ -72,6 +82,15 @@ final goRouter = GoRouter(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: BookmarkPage(),
               ),
+              routes: [
+                GoRoute(
+                  parentNavigatorKey: _rootNavigatorKey,
+                  path: 'practice',
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                    child: PracticePage(),
+                  ),
+                )
+              ],
             ),
           ],
         ),
