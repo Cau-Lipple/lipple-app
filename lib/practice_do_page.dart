@@ -1,23 +1,47 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 import 'package:video_player/video_player.dart';
 
-class PracticePage extends StatefulWidget {
-  const PracticePage({super.key});
+class PracticeDoPage extends StatefulWidget {
+  const PracticeDoPage({super.key});
 
   @override
-  State<PracticePage> createState() => _PracticePageState();
+  State<PracticeDoPage> createState() => _PracticeDoPageState();
 }
 
-class _PracticePageState extends State<PracticePage> {
+class _PracticeDoPageState extends State<PracticeDoPage> {
   final sentence =
       const SentencePractice(id: '0', title: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
   var isBookmark = false; //TODO: db와 연결작업
   late VideoPlayerController _controller;
   final practiceDoPath = '/bookmark/practice-do';
+  final record = AudioRecorder();
+  var isRecording = false;
+
+  Future<void> _startRecord() async {
+    Directory tempDir = await getTemporaryDirectory();
+    final now = DateTime.now().microsecondsSinceEpoch;
+    File outputFile = File('${tempDir.path}/$now.m4a');
+    if (await record.hasPermission()) {
+      // Start recording to file
+      await record.start(const RecordConfig(), path: outputFile.path);
+      // ... or to stream
+      final stream = await record
+          .startStream(const RecordConfig(encoder: AudioEncoder.pcm16bits));
+    }
+  }
+
+  Future<void> _stopRecord() async {
+    final path = await record.stop();
+    print(path);
+// ... or cancel it (and implicitly remove file/blob).
+  }
 
   @override
   void initState() {
@@ -27,7 +51,6 @@ class _PracticePageState extends State<PracticePage> {
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {
-          _controller.play();
           _controller.addListener(() {
             if (_controller.value.position == _controller.value.duration) {
               _controller.seekTo(const Duration(seconds: 0));
@@ -177,7 +200,9 @@ class _PracticePageState extends State<PracticePage> {
                         ),
                         child: Icon(
                           Icons.star,
-                          color: isBookmark ? const Color(0xFFF4D509) : Colors.grey,
+                          color: isBookmark
+                              ? const Color(0xFFF4D509)
+                              : Colors.grey,
                           size: 40,
                         ),
                       ),
@@ -205,12 +230,14 @@ class _PracticePageState extends State<PracticePage> {
                                     widthFactor: 0.9,
                                     heightFactor: 0.9,
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        if (_controller.value.isPlaying) {
-                                          _controller.pause();
+                                      onPressed: () async {
+                                        if (await record.isRecording()) {
+                                          _stopRecord();
                                         } else {
-                                          _controller.play();
+                                          _startRecord();
                                         }
+                                        isRecording =
+                                            await record.isRecording();
                                         setState(() {});
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -223,14 +250,14 @@ class _PracticePageState extends State<PracticePage> {
                                         shadowColor: const Color(0xFF9BF599),
                                         elevation: 7,
                                       ),
-                                      child: _controller.value.isPlaying
+                                      child: isRecording
                                           ? const Icon(
-                                              Icons.pause,
+                                              Icons.mic,
                                               color: Colors.white,
                                               size: 60,
                                             )
                                           : const Icon(
-                                              Icons.play_arrow,
+                                              Icons.mic_none,
                                               color: Colors.white,
                                               size: 60,
                                             ),
@@ -272,6 +299,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void dispose() {
     _controller.dispose();
+    record.dispose();
     super.dispose();
   }
 }
