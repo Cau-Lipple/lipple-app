@@ -6,6 +6,7 @@ import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/practice_do_page.dart';
 import 'package:lipple/practice_do_vid_page.dart';
 import 'package:lipple/practice_page.dart';
+import 'package:lipple/practice_result_page.dart';
 import 'package:lipple/specific_category_page.dart';
 import 'package:lipple/utils/custom_icons.dart';
 import 'package:lipple/entire_category_page.dart';
@@ -78,6 +79,13 @@ final goRouter = GoRouter(
                         child: PracticeDoPage(),
                       ),
                     ),
+                    GoRoute(
+                      parentNavigatorKey: _rootNavigatorKey,
+                      path: 'practice-result',
+                      pageBuilder: (context, state) => const NoTransitionPage(
+                        child: PracticeResultPage(),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -105,6 +113,13 @@ final goRouter = GoRouter(
                   path: 'practice-do',
                   pageBuilder: (context, state) => const NoTransitionPage(
                     child: PracticeDoVidPage(),
+                  ),
+                ),
+                GoRoute(
+                  parentNavigatorKey: _rootNavigatorKey,
+                  path: 'practice-result',
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                    child: PracticeResultPage(),
                   ),
                 ),
               ],

@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static List<Category> allCategories = <Category>[
-    Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
+    Category('일, 직장, \n직업', Image.asset('assets/images/work.png')),
     Category('휴가', Image.asset('assets/images/vacation.png')),
     Category('교통수단', Image.asset('assets/images/transport.png')),
     Category('반려동물', Image.asset('assets/images/pet.png')),
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const Center(
                         child: Text(
-                          '이 문장은 예시로 사용된 문장입니다.',
+                          '오늘도 좋은 하루 보내길 바라!',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,

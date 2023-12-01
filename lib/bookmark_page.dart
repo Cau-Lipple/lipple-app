@@ -12,9 +12,10 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   static List<SentencePractice> allSentences = <SentencePractice>[
-    const SentencePractice(id: '0', title: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.'),
-    const SentencePractice(id: '1', title: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.'),
-    const SentencePractice(id: '2', title: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.'),
+    const SentencePractice(id: '0', title: '오늘도 좋은 하루 보내길 바라!'),
+    const SentencePractice(id: '1', title: '집에 가다가 너무 귀여운 검은 고양이를 만났어.'),
+    const SentencePractice(id: '2', title: '내일까지 제출해야 할 과제가 있어서 안 돼.'),
+    const SentencePractice(id: '3', title: '오늘 내가 제일 좋아하는 메뉴가 나온다!'),
   ];
 
   final String practicePath = '/bookmark/practice';

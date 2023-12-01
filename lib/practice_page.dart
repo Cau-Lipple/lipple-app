@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
@@ -177,7 +176,9 @@ class _PracticePageState extends State<PracticePage> {
                         ),
                         child: Icon(
                           Icons.star,
-                          color: isBookmark ? const Color(0xFFF4D509) : Colors.grey,
+                          color: isBookmark
+                              ? const Color(0xFFF4D509)
+                              : Colors.grey,
                           size: 40,
                         ),
                       ),
