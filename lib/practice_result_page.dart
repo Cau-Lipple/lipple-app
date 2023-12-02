@@ -6,6 +6,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:lipple/widgets/snack_bar_good.dart';
+import 'package:lipple/widgets/snack_bar_great.dart';
+import 'package:lipple/widgets/snack_bar_ok.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 class PracticeResultPage extends StatefulWidget {
@@ -25,18 +29,28 @@ class PracticeResultPage extends StatefulWidget {
 class _PracticeResultPageState extends State<PracticeResultPage> {
   // final sentence =
   //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+  final practiceDoPath = '/bookmark/practice-do';
 
-  var isBookmark = false; //TODO: db와 연결작업
+  bool isBookmark = false;
   late SentencePractice sentence;
   late XFile file;
   late VideoPlayerController _controller;
-  final practiceDoPath = '/bookmark/practice-do';
+  int score = 80;
+
+  Future<bool> setBookmark() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> dbList = (prefs.getStringList('bookmark') ?? []);
+    List<int> originalList = dbList.map((i) => int.parse(i)).toList();
+    return originalList.contains(sentence.id);
+  }
 
   @override
   void initState() {
     super.initState();
     sentence = widget.sentence;
     file = widget.file;
+    setBookmark().then((value) => isBookmark = value);
     _controller = VideoPlayerController.networkUrl(Uri.parse(
         'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
       ..initialize().then((_) {
@@ -68,51 +82,13 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
         ),
       ),
       body: Builder(builder: (context) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 10),
-              margin:
-                  const EdgeInsets.symmetric(vertical: 160.0, horizontal: 25),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(
-                  color: Color(0xFF7AB4FD),
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              backgroundColor: const Color(0xFFD2E9FE),
-              content: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: const Color(0xFF2271F9),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: const Icon(
-                        Icons.sentiment_satisfied_alt_rounded,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    "80점, 좋은 발음입니다!",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+            ScaffoldMessenger.of(context).showSnackBar(score > 70
+                ? SnackBarGreat(score)
+                : (score > 40 ? SnackBarGood(score) : SnackBarOk(score)));
+          },
+        );
         return Container(
           height: double.infinity,
           width: double.infinity,
@@ -278,10 +254,10 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
                                 show: true,
                                 getDotPainter: (spot, percent, barData, index) {
                                   Color dotColor = spot.y > 70
-                                      ? const Color(0xFF5FBA32)
+                                      ? const Color(0xFF589AFB)
                                       : (spot.y > 40
-                                          ? const Color(0xFFF2D309)
-                                          : const Color(0xFFE96265));
+                                          ? const Color(0xFFF7E144)
+                                          : const Color(0xFFFF7190));
 
                                   return FlDotCirclePainter(
                                     color: dotColor,

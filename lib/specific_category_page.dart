@@ -36,7 +36,6 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
       json.decode(response.body)['body'] as Map<String, dynamic>;
       List<dynamic> sentenceList = body['videos'];
 
-      print(sentenceList);
       List<SentencePractice> sentences = sentenceList.map((item) {
         return SentencePractice.fromJson(item, category);
       }).toList();

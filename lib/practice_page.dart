@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,7 +21,7 @@ class _PracticePageState extends State<PracticePage> {
   //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
   late SentencePractice sentence;
   VideoPlayerController? _controller;
-  var isBookmark = false; //TODO: db와 연결작업
+  bool isBookmark = false;
   final practiceDoPath = '/bookmark/practice-do';
 
   Future<String> fetchVideoUrl() async {
@@ -36,10 +37,19 @@ class _PracticePageState extends State<PracticePage> {
     }
   }
 
+  Future<bool> setBookmark() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> dbList = (prefs.getStringList('bookmark') ?? []);
+    List<int> originalList = dbList.map((i) => int.parse(i)).toList();
+    return originalList.contains(sentence.id);
+  }
+
   @override
   void initState() {
     super.initState();
     sentence = widget.sentence;
+    setBookmark().then((value) => isBookmark = value);
     fetchVideoUrl().then((videoUrl) {
       _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
         ..initialize().then((_) {
@@ -182,8 +192,25 @@ class _PracticePageState extends State<PracticePage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           isBookmark = !isBookmark;
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+
+                          List<String> dbList =
+                              (prefs.getStringList('bookmark') ?? []);
+                          List<int> originalList =
+                              dbList.map((i) => int.parse(i)).toList();
+                          if (isBookmark) {
+                            originalList.insert(0, sentence.id);
+                          } else {
+                            originalList.removeWhere(
+                                (element) => element == sentence.id);
+                          }
+                          dbList =
+                              originalList.map((i) => i.toString()).toList();
+                          print(dbList);
+                          await prefs.setStringList('bookmark', dbList);
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(

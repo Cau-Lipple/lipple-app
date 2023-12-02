@@ -202,7 +202,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                                         //     aspectRatio: _controller!.value!.aspectRatio,
                                         //     child: CameraPreview(_controller!),
                                         //   )
-                                        : const CircularProgressIndicator(),
+                                        : const Center(child: CircularProgressIndicator()),
                                   ),
                                 ),
                                 CustomPaint(
