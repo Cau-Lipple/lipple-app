@@ -5,4 +5,8 @@ class Category {
 
   final String title;
   final Image image;
+
+  factory Category.fromJson(String title) {
+    return Category(title, Image.asset('assets/images/work.png'));
+  }
 }

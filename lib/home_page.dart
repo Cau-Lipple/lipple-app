@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:lipple/widgets/square_category_button.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,13 +16,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static List<Category> allCategories = <Category>[
-    Category('일, 직장, \n직업', Image.asset('assets/images/work.png')),
-    Category('휴가', Image.asset('assets/images/vacation.png')),
-    Category('교통수단', Image.asset('assets/images/transport.png')),
-    Category('반려동물', Image.asset('assets/images/pet.png')),
-    Category('문화, 예술', Image.asset('assets/images/art.png')),
-  ];
+  late Future<List<Category>> allCategories;
+
+  // static List<Category> allCategories = <Category>[
+  //   Category('일, 직장, \n직업', Image.asset('assets/images/work.png')),
+  //   Category('휴가', Image.asset('assets/images/vacation.png')),
+  //   Category('교통수단', Image.asset('assets/images/transport.png')),
+  //   Category('반려동물', Image.asset('assets/images/pet.png')),
+  //   Category('문화, 예술', Image.asset('assets/images/art.png')),
+  // ];
 
   static List<SentencePractice> allSentences = <SentencePractice>[
     SentencePractice(
@@ -38,6 +43,29 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final String categoryDetailsPath = '/category/specific';
+
+  Future<List<Category>> fetchCategory() async {
+    var url = 'http://10.19.247.96:3000';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body =
+          json.decode(response.body)['body'] as Map<String, dynamic>;
+      List<dynamic> dynamicList = body['categories'];
+      List<Category> categories =
+          dynamicList.map((item) => Category.fromJson(item)).toList();
+      return categories;
+    } else {
+      throw Exception('Cannot get categories');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    allCategories = fetchCategory();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,8 +208,8 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.only(bottom: 8.0, left: 15.0, right: 15.0),
+                  padding: const EdgeInsets.only(
+                      bottom: 8.0, left: 15.0, right: 15.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,22 +242,34 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: allCategories.map((Category category) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SquareCategoryButton(
-                            category,
-                            () => context.go(
-                                  categoryDetailsPath,
-                                  extra: category,
-                                )),
+                FutureBuilder<List<Category>>(
+                  future: allCategories,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Category>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      List<Category> categories = snapshot.data ?? [];
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: categories.map((Category category) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SquareCategoryButton(
+                                category,
+                                () => context.go(categoryDetailsPath,
+                                    extra: category),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       );
-                    }).toList(),
-                  ),
-                ),
+                    }
+                  },
+                )
               ],
             ),
           ),
