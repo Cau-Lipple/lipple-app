@@ -17,7 +17,7 @@ class PracticeDoPage extends StatefulWidget {
 
 class _PracticeDoPageState extends State<PracticeDoPage> {
   final sentence =
-      const SentencePractice(id: '0', title: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+      const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
   var isBookmark = false; //TODO: db와 연결작업
   late VideoPlayerController _controller;
   final practiceDoPath = '/bookmark/practice-do';
@@ -168,7 +168,7 @@ class _PracticeDoPageState extends State<PracticeDoPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
-                    sentence.title,
+                    sentence.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

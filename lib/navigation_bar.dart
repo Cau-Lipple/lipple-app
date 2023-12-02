@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/bookmark_page.dart';
 import 'package:lipple/home_page.dart';
 import 'package:lipple/interfaces/category_interface.dart';
+import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/practice_do_page.dart';
 import 'package:lipple/practice_do_vid_page.dart';
 import 'package:lipple/practice_page.dart';
@@ -68,23 +71,38 @@ final goRouter = GoRouter(
                     GoRoute(
                       parentNavigatorKey: _rootNavigatorKey,
                       path: 'practice',
-                      pageBuilder: (context, state) => const NoTransitionPage(
-                        child: PracticePage(),
-                      ),
+                      pageBuilder: (context, state) {
+                        final SentencePractice sentence =
+                            state.extra as SentencePractice;
+                        return NoTransitionPage(
+                          child: PracticePage(sentence: sentence),
+                        );
+                      },
                     ),
                     GoRoute(
                       parentNavigatorKey: _rootNavigatorKey,
                       path: 'practice-do',
-                      pageBuilder: (context, state) => const NoTransitionPage(
-                        child: PracticeDoPage(),
-                      ),
+                      pageBuilder: (context, state) {
+                        final SentencePractice sentence =
+                            state.extra as SentencePractice;
+                        return NoTransitionPage(
+                          child: PracticeDoVidPage(sentence: sentence),
+                        );
+                      },
                     ),
                     GoRoute(
                       parentNavigatorKey: _rootNavigatorKey,
                       path: 'practice-result',
-                      pageBuilder: (context, state) => const NoTransitionPage(
-                        child: PracticeResultPage(),
-                      ),
+                      pageBuilder: (context, state) {
+                        final Map<String, dynamic> extra =
+                        state.extra as Map<String, dynamic>;
+                        return NoTransitionPage(
+                          child: PracticeResultPage(
+                            sentence: extra['sentence']!,
+                            file: extra['file']!,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -104,23 +122,38 @@ final goRouter = GoRouter(
                 GoRoute(
                   parentNavigatorKey: _rootNavigatorKey,
                   path: 'practice',
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                    child: PracticePage(),
-                  ),
+                  pageBuilder: (context, state) {
+                    final SentencePractice sentence =
+                        state.extra as SentencePractice;
+                    return NoTransitionPage(
+                      child: PracticePage(sentence: sentence),
+                    );
+                  },
                 ),
                 GoRoute(
                   parentNavigatorKey: _rootNavigatorKey,
                   path: 'practice-do',
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                    child: PracticeDoVidPage(),
-                  ),
+                  pageBuilder: (context, state) {
+                    final SentencePractice sentence =
+                        state.extra as SentencePractice;
+                    return NoTransitionPage(
+                      child: PracticeDoVidPage(sentence: sentence),
+                    );
+                  },
                 ),
                 GoRoute(
                   parentNavigatorKey: _rootNavigatorKey,
                   path: 'practice-result',
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                    child: PracticeResultPage(),
-                  ),
+                  pageBuilder: (context, state) {
+                    final Map<String, dynamic> extra =
+                        state.extra as Map<String, dynamic>;
+                    return NoTransitionPage(
+                      child: PracticeResultPage(
+                        sentence: extra['sentence']!,
+                        file: extra['file']!,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

@@ -1,41 +1,61 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:video_player/video_player.dart';
+import 'package:http/http.dart' as http;
 
 class PracticePage extends StatefulWidget {
-  const PracticePage({super.key});
+  const PracticePage({required this.sentence, super.key});
+
+  final SentencePractice sentence;
 
   @override
   State<PracticePage> createState() => _PracticePageState();
 }
 
 class _PracticePageState extends State<PracticePage> {
-  final sentence =
-      const SentencePractice(id: '0', title: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+  // final sentence =
+  //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+  late SentencePractice sentence;
+  VideoPlayerController? _controller;
   var isBookmark = false; //TODO: db와 연결작업
-  late VideoPlayerController _controller;
   final practiceDoPath = '/bookmark/practice-do';
+
+  Future<String> fetchVideoUrl() async {
+    var url =
+        'http://10.19.247.96:3000/videos/${Uri.encodeComponent(sentence.id.toString())}';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final String videoUrl = json.decode(response.body)['body'];
+      return videoUrl;
+    } else {
+      throw Exception('Cannot get video URL');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {
-          _controller.play();
-          _controller.addListener(() {
-            if (_controller.value.position == _controller.value.duration) {
-              _controller.seekTo(const Duration(seconds: 0));
-              _controller.pause();
-              setState(() {});
-            }
+    sentence = widget.sentence;
+    fetchVideoUrl().then((videoUrl) {
+      _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+        ..initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          setState(() {
+            _controller!.play();
+            _controller!.addListener(() {
+              if (_controller!.value.position == _controller!.value.duration) {
+                _controller!.seekTo(const Duration(seconds: 0));
+                _controller!.pause();
+                setState(() {});
+              }
+            });
           });
         });
-      });
+    });
   }
 
   @override
@@ -67,16 +87,16 @@ class _PracticePageState extends State<PracticePage> {
               SizedBox(
                 height: 230,
                 width: 330,
-                child: _controller.value.isInitialized
+                child: _controller != null && _controller!.value.isInitialized
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (_controller.value.isPlaying) {
-                                _controller.pause();
+                              if (_controller!.value.isPlaying) {
+                                _controller!.pause();
                               } else {
-                                _controller.play();
+                                _controller!.play();
                               }
                               setState(() {});
                             },
@@ -84,11 +104,11 @@ class _PracticePageState extends State<PracticePage> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(25)),
                               child: AspectRatio(
-                                aspectRatio: _controller.value.aspectRatio,
+                                aspectRatio: _controller!.value.aspectRatio,
                                 child: Stack(
                                   children: [
-                                    VideoPlayer(_controller),
-                                    if (!_controller.value.isPlaying)
+                                    VideoPlayer(_controller!),
+                                    if (!_controller!.value.isPlaying)
                                       Container(
                                         color: Colors.black.withOpacity(0.4),
                                         child: const Center(
@@ -115,7 +135,7 @@ class _PracticePageState extends State<PracticePage> {
                                 right: Radius.circular(50),
                               ),
                               child: VideoProgressIndicator(
-                                _controller,
+                                _controller!,
                                 allowScrubbing: true,
                                 colors: const VideoProgressColors(
                                   playedColor: Colors.white,
@@ -144,7 +164,7 @@ class _PracticePageState extends State<PracticePage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
-                    sentence.title,
+                    sentence.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -207,10 +227,12 @@ class _PracticePageState extends State<PracticePage> {
                                     heightFactor: 0.9,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        if (_controller.value.isPlaying) {
-                                          _controller.pause();
-                                        } else {
-                                          _controller.play();
+                                        if (_controller != null) {
+                                          if (_controller!.value.isPlaying) {
+                                            _controller!.pause();
+                                          } else {
+                                            _controller!.play();
+                                          }
                                         }
                                         setState(() {});
                                       },
@@ -224,7 +246,8 @@ class _PracticePageState extends State<PracticePage> {
                                         shadowColor: const Color(0xFF9BF599),
                                         elevation: 7,
                                       ),
-                                      child: _controller.value.isPlaying
+                                      child: _controller != null &&
+                                              _controller!.value.isPlaying
                                           ? const Icon(
                                               Icons.pause,
                                               color: Colors.white,
@@ -244,7 +267,8 @@ class _PracticePageState extends State<PracticePage> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () => context.go(practiceDoPath),
+                        onPressed: () =>
+                            context.push(practiceDoPath, extra: sentence),
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(5),
@@ -272,7 +296,7 @@ class _PracticePageState extends State<PracticePage> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 }

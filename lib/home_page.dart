@@ -28,30 +28,30 @@ class _HomePageState extends State<HomePage> {
 
   static List<SentencePractice> allSentences = <SentencePractice>[
     SentencePractice(
-      id: '0',
-      title: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.',
+      id: 0,
+      name: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.',
       category: Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
     ),
     SentencePractice(
-        id: '1',
-        title: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.',
+        id: 1,
+        name: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.',
         category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
     SentencePractice(
-        id: '2',
-        title: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.',
+        id: 2,
+        name: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.',
         category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
   ];
 
   final String categoryDetailsPath = '/category/specific';
 
   Future<List<Category>> fetchCategory() async {
-    var url = 'http://10.19.247.96:3000';
+    var url =
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/category';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> body =
-          json.decode(response.body)['body'] as Map<String, dynamic>;
-      List<dynamic> dynamicList = body['categories'];
+      List<dynamic> dynamicList =
+          json.decode(response.body)['body'] as List<dynamic>;
       List<Category> categories =
           dynamicList.map((item) => Category.fromJson(item)).toList();
       return categories;
@@ -268,7 +268,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                   },
-                )
+                ),
               ],
             ),
           ),
@@ -468,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                           subtitle: Padding(
                             padding: const EdgeInsets.only(top: 5.0),
                             child: Text(
-                              sentencePractice.title,
+                              sentencePractice.name,
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w500),
                               maxLines: 1,

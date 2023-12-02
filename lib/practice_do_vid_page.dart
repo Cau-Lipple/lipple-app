@@ -7,16 +7,19 @@ import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/widgets/camera_widget.dart';
 
 class PracticeDoVidPage extends StatefulWidget {
-  const PracticeDoVidPage({super.key});
+  const PracticeDoVidPage({required this.sentence, super.key});
+
+  final SentencePractice sentence;
 
   @override
   State<PracticeDoVidPage> createState() => _PracticeDoVidPageState();
 }
 
 class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
-  final sentence =
-      const SentencePractice(id: '0', title: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+  // final sentence =
+  //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
 
+  late SentencePractice sentence;
   CameraController? _controller;
   bool _isCameraInitialized = false;
   late final List<CameraDescription> _cameras;
@@ -86,6 +89,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
   @override
   void initState() {
     super.initState();
+    sentence = widget.sentence;
     initCamera();
   }
 
@@ -140,7 +144,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
-                    sentence.title,
+                    sentence.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -222,7 +226,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               ElevatedButton(
-                                onPressed: () => context.go(practicePath),
+                                onPressed: () => context.pop(),
                                 style: ElevatedButton.styleFrom(
                                   shape: const CircleBorder(),
                                   padding: const EdgeInsets.all(5),
@@ -245,7 +249,13 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                                     if (file == null) {
                                       await _recordVideo();
                                     } else {
-                                      context.go(resultPath);
+                                      context.push(
+                                        resultPath,
+                                        extra: {
+                                          'sentence': sentence,
+                                          'file': file,
+                                        },
+                                      );
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

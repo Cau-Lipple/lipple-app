@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:camera/camera.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,24 +9,34 @@ import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:video_player/video_player.dart';
 
 class PracticeResultPage extends StatefulWidget {
-  const PracticeResultPage({super.key});
+  const PracticeResultPage({
+    required this.sentence,
+    required this.file,
+    super.key,
+  });
+
+  final SentencePractice sentence;
+  final XFile file;
 
   @override
   State<PracticeResultPage> createState() => _PracticeResultPageState();
 }
 
 class _PracticeResultPageState extends State<PracticeResultPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>(debugLabel: 'result');
-  final sentence =
-      const SentencePractice(id: '0', title: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+  // final sentence =
+  //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+
   var isBookmark = false; //TODO: db와 연결작업
+  late SentencePractice sentence;
+  late XFile file;
   late VideoPlayerController _controller;
   final practiceDoPath = '/bookmark/practice-do';
 
   @override
   void initState() {
     super.initState();
+    sentence = widget.sentence;
+    file = widget.file;
     _controller = VideoPlayerController.networkUrl(Uri.parse(
         'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
       ..initialize().then((_) {
@@ -307,7 +318,7 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Text(
-                      sentence.title,
+                      sentence.name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -347,7 +358,7 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
                           onPressed: () {
                             ScaffoldMessenger.of(context)
                                 .removeCurrentSnackBar();
-                            context.go(practiceDoPath);
+                            context.pop();
                           },
                           style: ElevatedButton.styleFrom(
                             shape: const CircleBorder(),

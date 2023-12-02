@@ -26,13 +26,13 @@ class _EntireCategoryPageState extends State<EntireCategoryPage> {
   // ];
 
   Future<List<Category>> fetchCategory() async {
-    var url = 'http://10.19.247.96:3000';
+    var url =
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/category';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> body =
-          json.decode(response.body)['body'] as Map<String, dynamic>;
-      List<dynamic> dynamicList = body['categories'];
+      List<dynamic> dynamicList =
+          json.decode(response.body)['body'] as List<dynamic>;
       List<Category> categories =
           dynamicList.map((item) => Category.fromJson(item)).toList();
       return categories;
@@ -97,7 +97,7 @@ class _EntireCategoryPageState extends State<EntireCategoryPage> {
               builder: (BuildContext context,
                   AsyncSnapshot<List<Category>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
@@ -109,7 +109,7 @@ class _EntireCategoryPageState extends State<EntireCategoryPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: CategoryElevatedButton(
                           category,
-                          () => context.go(detailsPath, extra: category),
+                          () => context.push(detailsPath, extra: category),
                         ),
                       );
                     }).toList(),

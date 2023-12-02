@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class Category {
@@ -7,6 +9,6 @@ class Category {
   final Image image;
 
   factory Category.fromJson(String title) {
-    return Category(title, Image.asset('assets/images/work.png'));
+    return Category(utf8.decode(title.codeUnits), Image.asset('assets/images/work.png'));
   }
 }

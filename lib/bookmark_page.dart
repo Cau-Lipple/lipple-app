@@ -12,10 +12,10 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   static List<SentencePractice> allSentences = <SentencePractice>[
-    const SentencePractice(id: '0', title: '오늘도 좋은 하루 보내길 바라!'),
-    const SentencePractice(id: '1', title: '집에 가다가 너무 귀여운 검은 고양이를 만났어.'),
-    const SentencePractice(id: '2', title: '내일까지 제출해야 할 과제가 있어서 안 돼.'),
-    const SentencePractice(id: '3', title: '오늘 내가 제일 좋아하는 메뉴가 나온다!'),
+    const SentencePractice(id: 0, name: '오늘도 좋은 하루 보내길 바라!'),
+    const SentencePractice(id: 1, name: '집에 가다가 너무 귀여운 검은 고양이를 만났어.'),
+    const SentencePractice(id: 2, name: '내일까지 제출해야 할 과제가 있어서 안 돼.'),
+    const SentencePractice(id: 3, name: '오늘 내가 제일 좋아하는 메뉴가 나온다!'),
   ];
 
   final String practicePath = '/bookmark/practice';
@@ -84,7 +84,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     ),
                     child: ListTile(
                       title: Text(
-                        sentencePractice.title,
+                        sentencePractice.name,
                         maxLines: 1,
                         overflow: TextOverflow.fade,
                         softWrap: false,

@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
+import 'package:http/http.dart' as http;
 
 class SpecificCategoryPage extends StatefulWidget {
   const SpecificCategoryPage({required this.category, super.key});
@@ -13,11 +16,43 @@ class SpecificCategoryPage extends StatefulWidget {
 }
 
 class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
-  static List<SentencePractice> allSentences = <SentencePractice>[
-    const SentencePractice(id: '0', title: '어제 힘들게 작성한 보고서를 컴퓨터 오류로 날렸어.'),
-    const SentencePractice(id: '1', title: '이건 문장 테스트 리스트에 들어갈 문장이야.'),
-    const SentencePractice(id: '2', title: '오늘도 야근해야할 것 같아.'),
-  ];
+  late Future<List<SentencePractice>> allSentences;
+  late Category category;
+  final String practicePath = '/bookmark/practice';
+
+  // static List<SentencePractice> allSentences = <SentencePractice>[
+  //   const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를 컴퓨터 오류로 날렸어.'),
+  //   const SentencePractice(id: 1, name: '이건 문장 테스트 리스트에 들어갈 문장이야.'),
+  //   const SentencePractice(id: 2, name: '오늘도 야근해야할 것 같아.'),
+  // ];
+
+  Future<List<SentencePractice>> fetchSentence() async {
+    var url =
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/category/${Uri.encodeComponent(category.title)}';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body =
+      json.decode(response.body)['body'] as Map<String, dynamic>;
+      List<dynamic> sentenceList = body['videos'];
+
+      print(sentenceList);
+      List<SentencePractice> sentences = sentenceList.map((item) {
+        return SentencePractice.fromJson(item, category);
+      }).toList();
+      return sentences;
+    } else {
+      throw Exception('Cannot get categories');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    category = widget.category;
+    allSentences = fetchSentence();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +79,7 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
           Container(
             alignment: Alignment.bottomLeft,
             width: double.infinity,
-            height: 210,
+            height: 230,
             decoration: const BoxDecoration(
               color: Color(0xFF22BB66),
               borderRadius: BorderRadius.vertical(
@@ -80,31 +115,45 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: allSentences.map((SentencePractice sentencePractice) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Color(0xFFC1C9BF)),
-                      ),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        sentencePractice.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 17,
-                        color: Colors.grey,
-                      ),
-                      onTap: () {},
-                    ),
-                  );
-                }).toList(),
+              child: FutureBuilder<List<SentencePractice>>(
+                future: allSentences,
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<SentencePractice>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<SentencePractice> sentences = snapshot.data ?? [];
+                    return ListView(
+                      padding: EdgeInsets.zero,
+                      children: sentences.map((SentencePractice sentence) {
+                        return Container(
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Color(0xFFC1C9BF)),
+                            ),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              sentence.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 17,
+                              color: Colors.grey,
+                            ),
+                            onTap: () =>
+                                context.push(practicePath, extra: sentence),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }
+                },
               ),
             ),
           )
