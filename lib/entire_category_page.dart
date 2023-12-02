@@ -1,22 +1,51 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lipple/specific_category_page.dart';
 import 'package:lipple/widgets/category_elevated_button.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:lipple/interfaces/category_interface.dart';
+import 'package:http/http.dart' as http;
 
-class EntireCategoryPage extends StatelessWidget {
+class EntireCategoryPage extends StatefulWidget {
   const EntireCategoryPage({super.key});
 
-  final String detailsPath = '/category/specific';
+  @override
+  State<EntireCategoryPage> createState() => _EntireCategoryPageState();
+}
 
-  static List<Category> allCategories = <Category>[
-    Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
-    Category('휴가', Image.asset('assets/images/vacation.png')),
-    Category('교통수단', Image.asset('assets/images/transport.png')),
-    Category('반려동물', Image.asset('assets/images/pet.png')),
-    Category('문화, 예술', Image.asset('assets/images/art.png')),
-  ];
+class _EntireCategoryPageState extends State<EntireCategoryPage> {
+  final String detailsPath = '/category/specific';
+  late Future<List<Category>> allCategories;
+
+  // static List<Category> allCategories = <Category>[
+  //   Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
+  //   Category('휴가', Image.asset('assets/images/vacation.png')),
+  //   Category('교통수단', Image.asset('assets/images/transport.png')),
+  //   Category('반려동물', Image.asset('assets/images/pet.png')),
+  //   Category('문화, 예술', Image.asset('assets/images/art.png')),
+  // ];
+
+  Future<List<Category>> fetchCategory() async {
+    var url = 'http://10.19.247.96:3000';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body =
+          json.decode(response.body)['body'] as Map<String, dynamic>;
+      List<dynamic> dynamicList = body['categories'];
+      List<Category> categories =
+          dynamicList.map((item) => Category.fromJson(item)).toList();
+      return categories;
+    } else {
+      throw Exception('Cannot get categories');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    allCategories = fetchCategory();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +92,30 @@ class EntireCategoryPage extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: allCategories.map((Category category) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: CategoryElevatedButton(
-                    category,
-                    () => context.go(detailsPath, extra: category),
-                  ),
-                );
-              }).toList(),
+            child: FutureBuilder<List<Category>>(
+              future: allCategories,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Category>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  List<Category> categories = snapshot.data ?? [];
+                  return ListView(
+                    padding: EdgeInsets.zero,
+                    children: categories.map((Category category) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: CategoryElevatedButton(
+                          category,
+                          () => context.go(detailsPath, extra: category),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
+              },
             ),
           ),
         )
