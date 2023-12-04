@@ -27,12 +27,16 @@ class _PracticePageState extends State<PracticePage> {
   final practiceDoPath = '/bookmark/practice-do';
 
   Future<String> fetchVideoUrl() async {
+    // var url =
+    //     'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/${Uri.encodeComponent(sentence.id.toString())}';
     var url =
-        'http://192.168.35.233:3000/videos/${Uri.encodeComponent(sentence.id.toString())}';
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/1';
+
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      final String videoUrl = json.decode(response.body)['body'];
+      final String videoPath = json.decode(response.body)['body'];
+      final String videoUrl = 'https://$videoPath';
       return videoUrl;
     } else {
       throw Exception('Cannot get video URL');

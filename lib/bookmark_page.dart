@@ -39,7 +39,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   }
 
   Future<List<SentencePractice>> fetchSentence() async {
-    var url = 'http://192.168.35.233:3000/';
+    var url = 'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -48,9 +48,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
       List<dynamic> sentenceList = body['videos'];
 
       List<SentencePractice> sentences = sentenceList.map((item) {
-        //TODO: 서버 연결 시 tmp에서 바꿔야 함
-        Category category = Category.tmpJson(item['category']);
-        return SentencePractice.tmpJson(item, category);
+        Category category = Category.fromJson(item['category']);
+        return SentencePractice.fromJsonAll(item, category);
       }).toList();
       return sentences;
     } else {

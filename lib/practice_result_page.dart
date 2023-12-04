@@ -6,9 +6,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:lipple/providers/bookmark_provider.dart';
 import 'package:lipple/widgets/snack_bar_good.dart';
 import 'package:lipple/widgets/snack_bar_great.dart';
 import 'package:lipple/widgets/snack_bar_ok.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
@@ -38,11 +40,12 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
   int score = 80;
 
   Future<bool> setBookmark() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    List<String> dbList = (prefs.getStringList('bookmark') ?? []);
-    List<int> originalList = dbList.map((i) => int.parse(i)).toList();
-    return originalList.contains(sentence.id);
+    return context.read<BookmarkProvider>().bookmarks.contains(sentence.id);
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
+    // List<String> dbList = (prefs.getStringList('bookmark') ?? []);
+    // List<int> originalList = dbList.map((i) => int.parse(i)).toList();
+    // return originalList.contains(sentence.id);
   }
 
   @override
@@ -414,6 +417,15 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
                         ElevatedButton(
                           onPressed: () {
                             isBookmark = !isBookmark;
+                            if (isBookmark) {
+                              context
+                                  .read<BookmarkProvider>()
+                                  .addBookmark(sentence.id);
+                            } else {
+                              context
+                                  .read<BookmarkProvider>()
+                                  .removeBookmark(sentence.id);
+                            }
                             setState(() {});
                           },
                           style: ElevatedButton.styleFrom(
