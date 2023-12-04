@@ -310,8 +310,10 @@ class _PracticePageState extends State<PracticePage> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () =>
-                            context.push(practiceDoPath, extra: sentence),
+                        onPressed: () {
+                          _controller!.pause();
+                          context.push(practiceDoPath, extra: sentence);
+                        },
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(5),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 SnackBar SnackBarOk(int score) {
   return SnackBar(
     behavior: SnackBarBehavior.floating,
-    duration: const Duration(seconds: 10),
+    duration: const Duration(seconds: 5),
     margin: const EdgeInsets.symmetric(vertical: 160.0, horizontal: 25),
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
     shape: RoundedRectangleBorder(

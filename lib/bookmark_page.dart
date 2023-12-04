@@ -8,7 +8,6 @@ import 'package:lipple/interfaces/sentence_practice_interface.dart';
 import 'package:lipple/providers/bookmark_provider.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 class BookmarkPage extends StatefulWidget {

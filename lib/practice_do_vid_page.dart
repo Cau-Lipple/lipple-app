@@ -41,6 +41,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
     _controller = CameraController(
       frontCamera,
       ResolutionPreset.medium, // 선택한 해상도 설정
+      enableAudio: true,
     );
 
     await _controller?.initialize();
@@ -197,19 +198,27 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                                     width: 370,
                                     height: 420,
                                     child: _isCameraInitialized
-                                        ? CameraWidget(controller: _controller)
-                                        // ? AspectRatio(
-                                        //     aspectRatio: _controller!.value!.aspectRatio,
-                                        //     child: CameraPreview(_controller!),
-                                        //   )
-                                        : const Center(child: CircularProgressIndicator()),
+                                        // ? CameraWidget(
+                                        //     controller: _controller)
+                                        ? OverflowBox(
+                                            maxHeight: double.infinity,
+                                            alignment: Alignment.center,
+                                            child: AspectRatio(
+                                              aspectRatio: _controller!
+                                                  .value!.aspectRatio,
+                                              child:
+                                                  CameraPreview(_controller!),
+                                            ),
+                                          )
+                                        : const Center(
+                                            child: CircularProgressIndicator()),
                                   ),
                                 ),
                                 CustomPaint(
                                   foregroundPainter: BorderPainter(),
                                   child: const SizedBox(
-                                    width: 340,
-                                    height: 390,
+                                    width: 250,
+                                    height: 200,
                                   ),
                                 ),
                               ],
@@ -249,11 +258,13 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                                     if (file == null) {
                                       await _recordVideo();
                                     } else {
+                                      XFile sendFile = file!;
+                                      file = null;
                                       context.push(
                                         resultPath,
                                         extra: {
                                           'sentence': sentence,
-                                          'file': file,
+                                          'file': sendFile,
                                         },
                                       );
                                     }
