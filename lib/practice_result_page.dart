@@ -186,7 +186,7 @@ class _PracticeResultPageState extends State<PracticeResultPage> {
                             horizontalInterval: 20,
                             getDrawingHorizontalLine: (value) {
                               return const FlLine(
-                                color: const Color(0x55008040),
+                                color: Color(0x55008040),
                                 strokeWidth: 1,
                               );
                             },

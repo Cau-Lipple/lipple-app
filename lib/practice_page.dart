@@ -26,7 +26,7 @@ class _PracticePageState extends State<PracticePage> {
 
   Future<String> fetchVideoUrl() async {
     var url =
-        'http://10.19.247.96:3000/videos/${Uri.encodeComponent(sentence.id.toString())}';
+        'http://192.168.35.233:3000/videos/${Uri.encodeComponent(sentence.id.toString())}';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

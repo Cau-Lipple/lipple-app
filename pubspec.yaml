@@ -45,6 +45,7 @@ dependencies:
   fl_chart: ^0.65.0
   http: ^1.1.2
   shared_preferences: ^2.2.2
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

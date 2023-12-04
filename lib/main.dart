@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lipple/navigation_bar.dart';
-import 'package:lipple/specific_category_page.dart';
 
 void main() {
   runApp(const MyApp());

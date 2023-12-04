@@ -41,13 +41,12 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
       }).toList();
       return sentences;
     } else {
-      throw Exception('Cannot get categories');
+      throw Exception('Cannot get sentences');
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     category = widget.category;
     allSentences = fetchSentence();

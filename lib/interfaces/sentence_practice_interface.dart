@@ -19,4 +19,17 @@ class SentencePractice {
       throw const FormatException('Failed to create sentence.');
     }
   }
+
+  factory SentencePractice.tmpJson(
+      Map<String, dynamic> json, Category category) {
+    if (json.containsKey('File_Id') && json.containsKey('name')) {
+      return SentencePractice(
+        id: json['File_Id'],
+        name: json['name'] as String,
+        category: category,
+      );
+    } else {
+      throw const FormatException('Failed to create sentence.');
+    }
+  }
 }

@@ -11,4 +11,8 @@ class Category {
   factory Category.fromJson(String title) {
     return Category(utf8.decode(title.codeUnits), Image.asset('assets/images/work.png'));
   }
+
+  factory Category.tmpJson(String title) {
+    return Category(title, Image.asset('assets/images/work.png'));
+  }
 }
