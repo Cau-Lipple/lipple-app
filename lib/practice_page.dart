@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:lipple/providers/bookmark_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -38,6 +40,7 @@ class _PracticePageState extends State<PracticePage> {
   }
 
   Future<bool> setBookmark() async {
+    return context.read<BookmarkProvider>().bookmarks.contains(sentence.id);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> dbList = (prefs.getStringList('bookmark') ?? []);
@@ -194,23 +197,32 @@ class _PracticePageState extends State<PracticePage> {
                       ElevatedButton(
                         onPressed: () async {
                           isBookmark = !isBookmark;
-                          final SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-
-                          List<String> dbList =
-                              (prefs.getStringList('bookmark') ?? []);
-                          List<int> originalList =
-                              dbList.map((i) => int.parse(i)).toList();
                           if (isBookmark) {
-                            originalList.insert(0, sentence.id);
+                            context
+                                .read<BookmarkProvider>()
+                                .addBookmark(sentence.id);
                           } else {
-                            originalList.removeWhere(
-                                (element) => element == sentence.id);
+                            context
+                                .read<BookmarkProvider>()
+                                .removeBookmark(sentence.id);
                           }
-                          dbList =
-                              originalList.map((i) => i.toString()).toList();
-                          print(dbList);
-                          await prefs.setStringList('bookmark', dbList);
+                          // final SharedPreferences prefs =
+                          //     await SharedPreferences.getInstance();
+                          //
+                          // List<String> dbList =
+                          //     (prefs.getStringList('bookmark') ?? []);
+                          // List<int> originalList =
+                          //     dbList.map((i) => int.parse(i)).toList();
+                          // if (isBookmark) {
+                          //   originalList.insert(0, sentence.id);
+                          // } else {
+                          //   originalList.removeWhere(
+                          //       (element) => element == sentence.id);
+                          // }
+                          // dbList =
+                          //     originalList.map((i) => i.toString()).toList();
+                          // print(dbList);
+                          // await prefs.setStringList('bookmark', dbList);
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(

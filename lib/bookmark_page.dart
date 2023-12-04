@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:lipple/providers/bookmark_provider.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
@@ -23,26 +26,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
   //   const SentencePractice(id: 3, name: '오늘 내가 제일 좋아하는 메뉴가 나온다!'),
   // ];
 
-  late Future<List<SentencePractice>> allSentences;
+  late List<SentencePractice> allSentences;
   final String practicePath = '/bookmark/practice';
   List<SentencePractice> bookmarkSentences = [];
+  bool initialized = false;
 
   Future<void> initializeData() async {
-    // 데이터를 가져오는 비동기 메서드 호출
-    List<SentencePractice> fetchedSentences = await fetchSentence();
+    allSentences = await fetchSentence();
 
-    // 가져온 문장들 중 북마크된 문장들을 필터링
-    List<SentencePractice> filteredBookmarkedSentences = [];
-    for (var sentence in fetchedSentences) {
-      if (await isBookmark(sentence.id)) {
-        filteredBookmarkedSentences.add(sentence);
-      }
-    }
-    // 필터링된 북마크 문장들을 저장
     setState(() {
-      bookmarkSentences = filteredBookmarkedSentences;
+      initialized = true;
     });
-    print(bookmarkSentences);
   }
 
   Future<List<SentencePractice>> fetchSentence() async {
@@ -133,32 +127,74 @@ class _BookmarkPageState extends State<BookmarkPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: bookmarkSentences.map((SentencePractice sentence) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Color(0xFFC1C9BF)),
-                      ),
+              child: initialized
+                  ? Consumer<BookmarkProvider>(
+                      builder: (context, bookmarkProvider, child) {
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: bookmarkProvider.bookmarks.length,
+                          itemBuilder: (context, index) {
+                            int id = bookmarkProvider.bookmarks[index];
+                            var sentence = allSentences.firstWhereOrNull(
+                                (element) => element.id == id);
+                            if (sentence != null) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom:
+                                        BorderSide(color: Color(0xFFC1C9BF)),
+                                  ),
+                                ),
+                                child: ListTile(
+                                  title: Text(
+                                    sentence.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                  ),
+                                  trailing: const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 17,
+                                    color: Colors.grey,
+                                  ),
+                                  onTap: () =>
+                                      context.go(practicePath, extra: sentence),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
                     ),
-                    child: ListTile(
-                      title: Text(
-                        sentence.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 17,
-                        color: Colors.grey,
-                      ),
-                      onTap: () => context.go(practicePath, extra: sentence),
-                    ),
-                  );
-                }).toList(),
-              ),
+              // ListView(
+              //   padding: EdgeInsets.zero,
+              //   children: bookmarkSentences.map((SentencePractice sentence) {
+              //     return Container(
+              //       decoration: const BoxDecoration(
+              //         border: Border(
+              //           bottom: BorderSide(color: Color(0xFFC1C9BF)),
+              //         ),
+              //       ),
+              //       child: ListTile(
+              //         title: Text(
+              //           sentence.name,
+              //           maxLines: 1,
+              //           overflow: TextOverflow.fade,
+              //           softWrap: false,
+              //         ),
+              //         trailing: const Icon(
+              //           Icons.arrow_forward_ios_rounded,
+              //           size: 17,
+              //           color: Colors.grey,
+              //         ),
+              //         onTap: () => context.go(practicePath, extra: sentence),
+              //       ),
+              //     );
+              //   }).toList(),
+              // ),
               // child: FutureBuilder<List<SentencePractice>>(
               //   future: allSentences,
               //   builder: (BuildContext context,

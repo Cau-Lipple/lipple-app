@@ -115,8 +115,9 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/bookmark',
-              pageBuilder: (context, state) => const NoTransitionPage(
-                child: BookmarkPage(),
+              pageBuilder: (context, state) => NoTransitionPage(
+                key: UniqueKey(),
+                child: const BookmarkPage(),
               ),
               routes: [
                 GoRoute(
