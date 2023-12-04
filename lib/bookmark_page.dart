@@ -28,7 +28,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   late List<SentencePractice> allSentences;
   final String practicePath = '/bookmark/practice';
-  List<SentencePractice> bookmarkSentences = [];
   bool initialized = false;
 
   Future<void> initializeData() async {
@@ -57,14 +56,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
     } else {
       throw Exception('Cannot get categories');
     }
-  }
-
-  Future<bool> isBookmark(id) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    List<String> dbList = (prefs.getStringList('bookmark') ?? []);
-    List<int> originalList = dbList.map((i) => int.parse(i)).toList();
-    return originalList.contains(id);
   }
 
   @override
@@ -158,7 +149,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                     color: Colors.grey,
                                   ),
                                   onTap: () =>
-                                      context.go(practicePath, extra: sentence),
+                                      context.push(practicePath, extra: sentence),
                                 ),
                               );
                             }

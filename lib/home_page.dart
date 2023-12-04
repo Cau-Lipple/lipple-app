@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:lipple/providers/bookmark_provider.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:lipple/widgets/square_category_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,8 +19,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final String categoryDetailsPath = '/category/specific';
+  final String bookmarkPracticePath = '/bookmark/practice';
   late Future<List<Category>> allCategories;
+  late List<SentencePractice> allSentences;
+  bool initialized = false;
 
+  // static List<SentencePractice> allSentences = <SentencePractice>[
+  //   SentencePractice(
+  //     id: 0,
+  //     name: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.',
+  //     category: Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
+  //   ),
+  //   SentencePractice(
+  //       id: 1,
+  //       name: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.',
+  //       category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
+  //   SentencePractice(
+  //       id: 2,
+  //       name: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.',
+  //       category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
+  // ];
   // static List<Category> allCategories = <Category>[
   //   Category('일, 직장, \n직업', Image.asset('assets/images/work.png')),
   //   Category('휴가', Image.asset('assets/images/vacation.png')),
@@ -26,23 +48,33 @@ class _HomePageState extends State<HomePage> {
   //   Category('문화, 예술', Image.asset('assets/images/art.png')),
   // ];
 
-  static List<SentencePractice> allSentences = <SentencePractice>[
-    SentencePractice(
-      id: 0,
-      name: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.',
-      category: Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
-    ),
-    SentencePractice(
-        id: 1,
-        name: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.',
-        category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
-    SentencePractice(
-        id: 2,
-        name: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.',
-        category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
-  ];
+  Future<void> initializeSentence() async {
+    allSentences = await fetchSentence();
 
-  final String categoryDetailsPath = '/category/specific';
+    setState(() {
+      initialized = true;
+    });
+  }
+
+  Future<List<SentencePractice>> fetchSentence() async {
+    var url = 'http://192.168.35.233:3000/';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body =
+          json.decode(response.body)['body'] as Map<String, dynamic>;
+      List<dynamic> sentenceList = body['videos'];
+
+      List<SentencePractice> sentences = sentenceList.map((item) {
+        //TODO: 서버 연결 시 tmp에서 바꿔야 함
+        Category category = Category.tmpJson(item['category']);
+        return SentencePractice.tmpJson(item, category);
+      }).toList();
+      return sentences;
+    } else {
+      throw Exception('Cannot get categories');
+    }
+  }
 
   Future<List<Category>> fetchCategory() async {
     var url =
@@ -64,6 +96,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     allCategories = fetchCategory();
+    initializeSentence();
   }
 
   @override
@@ -448,44 +481,101 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    children:
-                        allSentences.map((SentencePractice sentencePractice) {
-                      return Container(
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(color: Color(0xFFC1C9BF)),
-                          ),
+                  child: initialized
+                      ? Consumer<BookmarkProvider>(
+                          builder: (context, bookmarkProvider, child) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: bookmarkProvider.bookmarks.length,
+                              itemBuilder: (context, index) {
+                                int id = bookmarkProvider.bookmarks[index];
+                                var sentence = allSentences.firstWhereOrNull(
+                                    (element) => element.id == id);
+                                if (sentence != null) {
+                                  return Container(
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            color: Color(0xFFC1C9BF)),
+                                      ),
+                                    ),
+                                    child: ListTile(
+                                      title: Text(
+                                        sentence.category?.title ?? '',
+                                        style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xFF078043)),
+                                      ),
+                                      subtitle: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 5.0),
+                                        child: Text(
+                                          sentence.name,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.fade,
+                                          softWrap: false,
+                                        ),
+                                      ),
+                                      trailing: const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 17,
+                                        color: Colors.grey,
+                                      ),
+                                      onTap: () => context.push(
+                                          bookmarkPracticePath,
+                                          extra: sentence),
+                                    ),
+                                  );
+                                }
+                              },
+                            );
+                          },
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                        child: ListTile(
-                          title: Text(
-                            sentencePractice.category?.title ?? '',
-                            style: const TextStyle(
-                                fontSize: 11, color: Color(0xFF078043)),
-                          ),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Text(
-                              sentencePractice.name,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w500),
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                            ),
-                          ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 17,
-                            color: Colors.grey,
-                          ),
-                          onTap: () {},
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                  // ListView(
+                  //   shrinkWrap: true,
+                  //   padding: EdgeInsets.zero,
+                  //   children:
+                  //       allSentences.map((SentencePractice sentencePractice) {
+                  //     return Container(
+                  //       decoration: const BoxDecoration(
+                  //         border: Border(
+                  //           bottom: BorderSide(color: Color(0xFFC1C9BF)),
+                  //         ),
+                  //       ),
+                  //       child: ListTile(
+                  //         title: Text(
+                  //           sentencePractice.category?.title ?? '',
+                  //           style: const TextStyle(
+                  //               fontSize: 11, color: Color(0xFF078043)),
+                  //         ),
+                  //         subtitle: Padding(
+                  //           padding: const EdgeInsets.only(top: 5.0),
+                  //           child: Text(
+                  //             sentencePractice.name,
+                  //             style: const TextStyle(
+                  //                 fontSize: 14, fontWeight: FontWeight.w500),
+                  //             maxLines: 1,
+                  //             overflow: TextOverflow.fade,
+                  //             softWrap: false,
+                  //           ),
+                  //         ),
+                  //         trailing: const Icon(
+                  //           Icons.arrow_forward_ios_rounded,
+                  //           size: 17,
+                  //           color: Colors.grey,
+                  //         ),
+                  //         onTap: () {},
+                  //       ),
+                  //     );
+                  //   }).toList(),
+                  // ),
                 )
               ],
             ),
