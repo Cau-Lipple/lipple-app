@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
@@ -17,8 +18,10 @@ class SpecificCategoryPage extends StatefulWidget {
 
 class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
   late Future<List<SentencePractice>> allSentences;
+  late SentencePractice randomSentence;
   late Category category;
   final String practicePath = '/bookmark/practice';
+  bool initialized = false;
 
   // static List<SentencePractice> allSentences = <SentencePractice>[
   //   const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를 컴퓨터 오류로 날렸어.'),
@@ -33,12 +36,17 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> body =
-      json.decode(response.body)['body'] as Map<String, dynamic>;
+          json.decode(response.body)['body'] as Map<String, dynamic>;
       List<dynamic> sentenceList = body['videos'];
 
       List<SentencePractice> sentences = sentenceList.map((item) {
         return SentencePractice.fromJson(item, category);
       }).toList();
+      int randNum = Random().nextInt(sentences.length);
+      randomSentence = sentences[randNum];
+      setState(() {
+        initialized = true;
+      });
       return sentences;
     } else {
       throw Exception('Cannot get sentences');
@@ -103,7 +111,11 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
                     SizedBox(
                       width: 150,
                       height: 35,
-                      child: MyElevatedButton('랜덤 학습하기', () {}),
+                      child: MyElevatedButton('랜덤 학습하기', () {
+                        if (initialized) {
+                          context.push(practicePath, extra: randomSentence);
+                        }
+                      }),
                     )
                   ],
                 ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final String categoryDetailsPath = '/category/specific';
+  final String allPracticePath = '/category/specific/practice';
   final String bookmarkPracticePath = '/bookmark/practice';
   late Future<List<Category>> allCategories;
   late List<SentencePractice> allSentences;
+  late SentencePractice randomAllSentences;
+  late SentencePractice randomBookmarkSentences;
   bool initialized = false;
 
   // static List<SentencePractice> allSentences = <SentencePractice>[
@@ -48,8 +52,12 @@ class _HomePageState extends State<HomePage> {
   //   Category('문화, 예술', Image.asset('assets/images/art.png')),
   // ];
 
-  Future<void> initializeSentence() async {
+  Future<void> initializeSentence(int randBookmarkSentenceId) async {
     allSentences = await fetchSentence();
+    int randNum = Random().nextInt(allSentences.length);
+    randomAllSentences = allSentences[randNum];
+    randomBookmarkSentences = allSentences
+        .firstWhere((element) => element.id == randBookmarkSentenceId);
 
     setState(() {
       initialized = true;
@@ -57,7 +65,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<SentencePractice>> fetchSentence() async {
-    var url = 'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos';
+    var url =
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -95,7 +104,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     allCategories = fetchCategory();
-    initializeSentence();
+    int randNum =
+        Random().nextInt(context.read<BookmarkProvider>().bookmarks.length);
+    int sentenceId = context.read<BookmarkProvider>().bookmarks[randNum];
+    initializeSentence(sentenceId);
   }
 
   @override
@@ -133,20 +145,21 @@ class _HomePageState extends State<HomePage> {
                       const EdgeInsets.only(left: 25.0, right: 25.0, top: 75.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 130,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               '안녕하세요!',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
                             ),
-                            const Text(
+                            Text(
                               '오늘은 어떤 문장을\n배워볼까요?',
                               style: TextStyle(
                                 fontSize: 22,
@@ -154,14 +167,6 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: SizedBox(
-                                width: 170,
-                                height: 35,
-                                child: MyElevatedButton('오늘 목표 확인하기', () {}),
-                              ),
-                            )
                           ],
                         ),
                       ),
@@ -348,7 +353,12 @@ class _HomePageState extends State<HomePage> {
                               shadowColor: const Color(0x3A1FC368),
                               elevation: 3,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (initialized) {
+                                context.push(allPracticePath,
+                                    extra: randomAllSentences);
+                              }
+                            },
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -401,7 +411,12 @@ class _HomePageState extends State<HomePage> {
                               shadowColor: const Color(0x3A1FC368),
                               elevation: 3,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (initialized) {
+                                context.push(bookmarkPracticePath,
+                                    extra: randomBookmarkSentences);
+                              }
+                            },
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

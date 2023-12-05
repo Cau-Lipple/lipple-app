@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +28,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   late List<SentencePractice> allSentences;
   final String practicePath = '/bookmark/practice';
+  late SentencePractice randomSentence;
   bool initialized = false;
 
-  Future<void> initializeData() async {
+  Future<void> initializeData(int randBookmarkSentenceId) async {
     allSentences = await fetchSentence();
+    randomSentence = allSentences
+        .firstWhere((element) => element.id == randBookmarkSentenceId);
 
     setState(() {
       initialized = true;
@@ -38,7 +42,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
   }
 
   Future<List<SentencePractice>> fetchSentence() async {
-    var url = 'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos';
+    var url =
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -60,7 +65,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
   void initState() {
     super.initState();
     // 페이지가 나타날 때 초기화 작업 수행
-    initializeData();
+    int randNum =
+        Random().nextInt(context.read<BookmarkProvider>().bookmarks.length);
+    int sentenceId = context.read<BookmarkProvider>().bookmarks[randNum];
+    initializeData(sentenceId);
   }
 
   @override
@@ -100,7 +108,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
                         SizedBox(
                           width: 150,
                           height: 35,
-                          child: MyElevatedButton('랜덤 학습하기', () {}),
+                          child: MyElevatedButton('랜덤 학습하기', () {
+                            if (initialized) {
+                              context.push(practicePath,
+                                  extra: randomSentence);
+                            }
+                          }),
                         )
                       ],
                     ),
@@ -146,8 +159,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                     size: 17,
                                     color: Colors.grey,
                                   ),
-                                  onTap: () =>
-                                      context.push(practicePath, extra: sentence),
+                                  onTap: () => context.push(practicePath,
+                                      extra: sentence),
                                 ),
                               );
                             }
