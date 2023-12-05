@@ -10,6 +10,7 @@ import 'package:lipple/practice_do_page.dart';
 import 'package:lipple/practice_do_vid_page.dart';
 import 'package:lipple/practice_page.dart';
 import 'package:lipple/practice_result_page.dart';
+import 'package:lipple/setting_page.dart';
 import 'package:lipple/specific_category_page.dart';
 import 'package:lipple/utils/custom_icons.dart';
 import 'package:lipple/entire_category_page.dart';
@@ -95,7 +96,7 @@ final goRouter = GoRouter(
                       path: 'practice-result',
                       pageBuilder: (context, state) {
                         final Map<String, dynamic> extra =
-                        state.extra as Map<String, dynamic>;
+                            state.extra as Map<String, dynamic>;
                         return NoTransitionPage(
                           child: PracticeResultPage(
                             sentence: extra['sentence']!,
@@ -165,12 +166,8 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/settings',
-              pageBuilder: (context, state) => NoTransitionPage(
-                child: Container(
-                  color: Colors.purple,
-                  alignment: Alignment.center,
-                  child: const Text('Page 4'),
-                ),
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: SettingPage(),
               ),
             ),
           ],

@@ -39,17 +39,45 @@ class _PracticeResultPageState extends State<PracticeResultPage>
   final practiceDoPath = '/bookmark/practice-do';
   final homePagePath = '/';
   final messages = [
-    "자음을 첫소리로 가지고 있는 음절의 'ㅢ'는 [ㅣ]로 발음한다.",
-    "단어의 첫음절 이외의 '의'는 [ㅣ]로, 조사 '의'는 [ㅔ]로 발음함도 허용한다.",
-    "받침소리로는 'ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅇ'의 7개 자음만 발음한다.",
-    "받침 'ㄲ, ㅋ', 'ㅅ, ㅆ, ㅈ, ㅊ, ㅌ', 'ㅍ'은 어말 또는 자음 앞에서 각각 대표음 [ㄱ, ㄷ, ㅂ]으로 발음한다.",
-    "홑받침이나 쌍받침이 모음으로 시작된 조사나 어미, 접미사와 결합되는 경우에는, 제 음가대로 뒤 음절 첫소리로 옮겨 발음한다.",
-    "겹받침이 모음으로 시작된 조사나 어미, 접미사와 결합되는 경우에는, 뒤엣것만을 뒤 음절 첫소리로 옮겨 발음한다. (이 경우, 'ㅅ'은 된소리로 발음함.)",
-    "받침 'ㄷ, ㅌ(ㄾ)'이 조사나 접미사의 모음 'ㅣ'와 결합되는 경우에는, [ㅈ, ㅊ]으로 바꾸어서 뒤 음절 첫소리로 옮겨 발음한다.",
-    "받침 'ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ, ㅎ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)'은 'ㄴ, ㅁ' 앞에서 [ㅇ, ㄴ, ㅁ]으로 발음한다.",
-    "받침 'ㅁ, ㅇ' 뒤에 연결되는 'ㄹ'은 [ㄴ]으로 발음한다. 받침 'ㄱ, ㅂ' 뒤에 연결되는 'ㄹ'도 [ㄴ]으로 발음한다.",
-    "'ㄴ'은 'ㄹ'의 앞이나 뒤에서 [ㄹ]로 발음한다.",
-    "받침 'ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)' 뒤에 연결되는 'ㄱ, ㄷ, ㅂ, ㅅ, ㅈ'은 된소리로 발음한다.",
+    ["자음을 첫소리로 가지고 있는 음절의 'ㅢ'는 [ㅣ]로 발음한다.", "무늬[무니] 띄어쓰기[띠어쓰기] 희망[히망]"],
+    [
+      "단어의 첫음절 이외의 '의'는 [ㅣ]로, 조사 '의'는 [ㅔ]로 발음함도 허용한다.",
+      "주의[주의/주이] 우리의[우리의/우리에]"
+    ],
+    ["받침소리로는 'ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅇ'의 7개 자음만 발음한다.", ""],
+    [
+      "받침 'ㄲ, ㅋ', 'ㅅ, ㅆ, ㅈ, ㅊ, ㅌ', 'ㅍ'은 어말 또는 자음 앞에서 각각 대표음 [ㄱ, ㄷ, ㅂ]으로 발음한다.",
+      "키읔[키윽] 옷[옫] 꽃[꼳]"
+    ],
+    [
+      "홑받침이나 쌍받침이 모음으로 시작된 조사나 어미, 접미사와 결합되는 경우에는, 제 음가대로 뒤 음절 첫소리로 옮겨 발음한다.",
+      "깎아[까까] 꽃을[꼬츨] 밭에[바테]"
+    ],
+    [
+      "겹받침이 모음으로 시작된 조사나 어미, 접미사와 결합되는 경우에는, 뒤엣것만을 뒤 음절 첫소리로 옮겨 발음한다. (이 경우, 'ㅅ'은 된소리로 발음함.)",
+      "넋이[넉씨] 닭을[달글] 앉아[안자]"
+    ],
+    [
+      "받침 'ㄷ, ㅌ(ㄾ)'이 조사나 접미사의 모음 'ㅣ'와 결합되는 경우에는, [ㅈ, ㅊ]으로 바꾸어서 뒤 음절 첫소리로 옮겨 발음한다.",
+      "굳이[구지] 밭이[바치] 미닫이[미다지]"
+    ],
+    [
+      "받침 'ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ, ㅎ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)'은 'ㄴ, ㅁ' 앞에서 [ㅇ, ㄴ, ㅁ]으로 발음한다.",
+      "국물[궁물] 닫는[단는] 밟는[밤는]"
+    ],
+    [
+      "받침 'ㅁ, ㅇ' 뒤에 연결되는 'ㄹ'은 [ㄴ]으로 발음한다.\n 받침 'ㄱ, ㅂ' 뒤에 연결되는 'ㄹ'도 [ㄴ]으로 발음한다.",
+      "담력[담녁] 강릉[강능] 협력[혐녁]"
+    ],
+    ["'ㄴ'은 'ㄹ'의 앞이나 뒤에서 [ㄹ]로 발음한다.", "난로[날로] 칼날[칼랄] 줄넘기[줄럼끼]"],
+    [
+      "받침 'ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)' 뒤에 연결되는 'ㄱ, ㄷ, ㅂ, ㅅ, ㅈ'은 된소리로 발음한다.",
+      "국밥[국빱] 깎다[깎따] 꽃다발[꼳따발]"
+    ],
+    [
+      "합성어 및 파생어에서, 앞 단어나 접두사의 끝이 자음이고 뒤 단어나 접미사의 첫 음절이 '이, 야, 여, 요, 유'인 경우에는, 'ㄴ'소리를 첨가하여 [니, 냐, 녀, 뇨, 뉴]로 발음한다.",
+      "솜이불[솜니불] 한여름[한녀름] 담요[담뇨]"
+    ]
   ];
 
   bool isBookmark = false;
@@ -60,7 +88,8 @@ class _PracticeResultPageState extends State<PracticeResultPage>
   bool initialized = false;
   bool snackbarExecuted = false;
   late AnimationController loadingController;
-  String randomMessage = "<한국어 표준 발음법> 함께 공부해보아요!";
+  String randomMessage = "자음을 첫소리로 가지고 있는 음절의 'ㅢ'는 [ㅣ]로 발음한다.";
+  String randomExample = "무늬[무니] 띄어쓰기[띠어쓰기] 희망[히망]";
 
   Future<bool> setBookmark() async {
     return context.read<BookmarkProvider>().bookmarks.contains(sentence.id);
@@ -72,7 +101,7 @@ class _PracticeResultPageState extends State<PracticeResultPage>
   }
 
   Future<Result> fetchResult() async {
-    var url = 'http://192.168.35.233:3000/function';
+    var url = 'http://10.18.232.5:3000/function';
 
     File vidFile = File(file.path);
     List<int> videoBytes = await vidFile.readAsBytes();
@@ -101,7 +130,9 @@ class _PracticeResultPageState extends State<PracticeResultPage>
       });
     loadingController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        randomMessage = messages[Random().nextInt(messages.length)];
+        int randNum = Random().nextInt(messages.length);
+        randomMessage = messages[randNum][0];
+        randomExample = messages[randNum][1];
         loadingController.reset();
         loadingController.forward();
       }
@@ -175,17 +206,60 @@ class _PracticeResultPageState extends State<PracticeResultPage>
                               semanticsLabel: 'Linear progress indicator',
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 40.0),
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 10.0),
                             child: Text(
-                              randomMessage,
-                              style: const TextStyle(
+                              "<한국어 표준 발음법> 함께 공부해보아요!",
+                              style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 40.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Container(
+                                width: 400,
+                                height: 100,
+                                color: Colors.white,
+                                alignment: Alignment.center,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    randomMessage,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15)),
+                            child: Container(
+                              width: 300,
+                              height: 50,
+                              color: Colors.black45,
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  randomExample,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     );
