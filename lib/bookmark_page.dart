@@ -28,13 +28,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   late List<SentencePractice> allSentences;
   final String practicePath = '/bookmark/practice';
-  late SentencePractice randomSentence;
+  late SentencePractice? randomSentence;
   bool initialized = false;
 
   Future<void> initializeData(int randBookmarkSentenceId) async {
     allSentences = await fetchSentence();
     randomSentence = allSentences
-        .firstWhere((element) => element.id == randBookmarkSentenceId);
+        .firstWhereOrNull((element) => element.id == randBookmarkSentenceId);
 
     setState(() {
       initialized = true;
@@ -64,10 +64,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   void initState() {
     super.initState();
-    // 페이지가 나타날 때 초기화 작업 수행
-    int randNum =
-        Random().nextInt(context.read<BookmarkProvider>().bookmarks.length);
-    int sentenceId = context.read<BookmarkProvider>().bookmarks[randNum];
+
+    int sentenceId = -1;
+    if (context.read<BookmarkProvider>().bookmarks.isNotEmpty) {
+      int randNum =
+          Random().nextInt(context.read<BookmarkProvider>().bookmarks.length);
+      sentenceId = context.read<BookmarkProvider>().bookmarks[randNum];
+    }
     initializeData(sentenceId);
   }
 
@@ -109,12 +112,35 @@ class _BookmarkPageState extends State<BookmarkPage> {
                           width: 150,
                           height: 35,
                           child: MyElevatedButton('랜덤 학습하기', () {
-                            if (initialized &&
-                                context
+                            if (initialized) {
+                              if (randomSentence != null &&
+                                  context
+                                      .read<BookmarkProvider>()
+                                      .bookmarks
+                                      .contains(randomSentence!.id)) {
+                                context.push(practicePath,
+                                    extra: randomSentence);
+                              } else if (context
+                                  .read<BookmarkProvider>()
+                                  .bookmarks
+                                  .isNotEmpty) {
+                                int randNum = Random().nextInt(context
                                     .read<BookmarkProvider>()
                                     .bookmarks
-                                    .isNotEmpty) {
-                              context.push(practicePath, extra: randomSentence);
+                                    .length);
+                                int randSentenceId = context
+                                    .read<BookmarkProvider>()
+                                    .bookmarks[randNum];
+
+                                randomSentence = allSentences.firstWhereOrNull(
+                                    (element) => element.id == randSentenceId);
+                                setState(() {});
+
+                                if (randomSentence != null) {
+                                  context.push(practicePath,
+                                      extra: randomSentence);
+                                }
+                              }
                             }
                           }),
                         )

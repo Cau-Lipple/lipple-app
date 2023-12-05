@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   late Future<List<Category>> allCategories;
   late List<SentencePractice> allSentences;
   late SentencePractice randomAllSentences;
-  late SentencePractice randomBookmarkSentences;
+  late SentencePractice? randomBookmarkSentences;
   bool initialized = false;
 
   // static List<SentencePractice> allSentences = <SentencePractice>[
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     int randNum = Random().nextInt(allSentences.length);
     randomAllSentences = allSentences[randNum];
     randomBookmarkSentences = allSentences
-        .firstWhere((element) => element.id == randBookmarkSentenceId);
+        .firstWhereOrNull((element) => element.id == randBookmarkSentenceId);
 
     setState(() {
       initialized = true;
@@ -104,9 +104,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     allCategories = fetchCategory();
-    int randNum =
-        Random().nextInt(context.read<BookmarkProvider>().bookmarks.length);
-    int sentenceId = context.read<BookmarkProvider>().bookmarks[randNum];
+    int sentenceId = -1;
+    if (context.read<BookmarkProvider>().bookmarks.isNotEmpty) {
+      int randNum =
+          Random().nextInt(context.read<BookmarkProvider>().bookmarks.length);
+      sentenceId = context.read<BookmarkProvider>().bookmarks[randNum];
+    }
     initializeSentence(sentenceId);
   }
 
@@ -413,8 +416,36 @@ class _HomePageState extends State<HomePage> {
                             ),
                             onPressed: () {
                               if (initialized) {
-                                context.push(bookmarkPracticePath,
-                                    extra: randomBookmarkSentences);
+                                if (randomBookmarkSentences != null &&
+                                    context
+                                        .read<BookmarkProvider>()
+                                        .bookmarks
+                                        .contains(
+                                            randomBookmarkSentences!.id)) {
+                                  context.push(bookmarkPracticePath,
+                                      extra: randomBookmarkSentences);
+                                } else if (context
+                                    .read<BookmarkProvider>()
+                                    .bookmarks
+                                    .isNotEmpty) {
+                                  int randNum = Random().nextInt(context
+                                      .read<BookmarkProvider>()
+                                      .bookmarks
+                                      .length);
+                                  int randSentenceId = context
+                                      .read<BookmarkProvider>()
+                                      .bookmarks[randNum];
+
+                                  randomBookmarkSentences =
+                                      allSentences.firstWhereOrNull(
+                                          (element) => element.id == randSentenceId);
+                                  setState(() {});
+
+                                  if (randomBookmarkSentences != null) {
+                                    context.push(bookmarkPracticePath,
+                                        extra: randomBookmarkSentences);
+                                  }
+                                }
                               }
                             },
                             child: const Row(
