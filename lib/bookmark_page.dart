@@ -109,9 +109,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
                           width: 150,
                           height: 35,
                           child: MyElevatedButton('랜덤 학습하기', () {
-                            if (initialized) {
-                              context.push(practicePath,
-                                  extra: randomSentence);
+                            if (initialized &&
+                                context
+                                    .read<BookmarkProvider>()
+                                    .bookmarks
+                                    .isNotEmpty) {
+                              context.push(practicePath, extra: randomSentence);
                             }
                           }),
                         )

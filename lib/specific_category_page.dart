@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
+import 'package:lipple/providers/bookmark_provider.dart';
 import 'package:lipple/widgets/my_elevated_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class SpecificCategoryPage extends StatefulWidget {
   const SpecificCategoryPage({required this.category, super.key});
@@ -112,7 +114,11 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
                       width: 150,
                       height: 35,
                       child: MyElevatedButton('랜덤 학습하기', () {
-                        if (initialized) {
+                        if (initialized &&
+                            context
+                                .read<BookmarkProvider>()
+                                .bookmarks
+                                .isNotEmpty) {
                           context.push(practicePath, extra: randomSentence);
                         }
                       }),
