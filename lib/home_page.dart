@@ -207,24 +207,31 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      const Center(
-                        child: Text(
-                          '오늘도 좋은 하루 보내길 바라!',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            shadows: [
-                              Shadow(
-                                color: Color(0xFF007239),
-                                offset: Offset(0, -7),
+                      Center(
+                        child: initialized
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25.0),
+                                child: Text(
+                                  allSentences[0].name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    shadows: [
+                                      Shadow(
+                                        color: Color(0xFF007239),
+                                        offset: Offset(0, -3),
+                                      )
+                                    ],
+                                    color: Colors.transparent,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Color(0xFF6AD399),
+                                    decorationThickness: 1.5,
+                                    height: 1.5,
+                                  ),
+                                ),
                               )
-                            ],
-                            color: Colors.transparent,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Color(0xFF6AD399),
-                            decorationThickness: 1.5,
-                          ),
-                        ),
+                            : const CircularProgressIndicator(),
                       ),
                       Center(
                         child: SizedBox(
@@ -232,7 +239,12 @@ class _HomePageState extends State<HomePage> {
                           height: 35,
                           child: MyElevatedButton(
                             '지금 바로 공부하기',
-                            () {},
+                            () {
+                              if (initialized) {
+                                context.push(allPracticePath,
+                                    extra: allSentences[0]);
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -437,8 +449,8 @@ class _HomePageState extends State<HomePage> {
                                       .bookmarks[randNum];
 
                                   randomBookmarkSentences =
-                                      allSentences.firstWhereOrNull(
-                                          (element) => element.id == randSentenceId);
+                                      allSentences.firstWhereOrNull((element) =>
+                                          element.id == randSentenceId);
                                   setState(() {});
 
                                   if (randomBookmarkSentences != null) {
