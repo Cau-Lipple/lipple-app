@@ -27,10 +27,10 @@ class _PracticePageState extends State<PracticePage> {
   final practiceDoPath = '/bookmark/practice-do';
 
   Future<String> fetchVideoUrl() async {
-    // var url =
-    //     'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/${Uri.encodeComponent(sentence.id.toString())}';
     var url =
-        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/1';
+        'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/${Uri.encodeComponent(sentence.id.toString())}';
+    // var url =
+    //     'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/1';
 
     final response = await http.get(Uri.parse(url));
 
