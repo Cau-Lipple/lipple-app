@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +17,6 @@ import 'package:lipple/widgets/snack_bar_great.dart';
 import 'package:lipple/widgets/snack_bar_ok.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:http/http.dart' as http;
 
 class PracticeResultPage extends StatefulWidget {
   const PracticeResultPage({
@@ -36,6 +36,7 @@ class _PracticeResultPageState extends State<PracticeResultPage>
     with TickerProviderStateMixin {
   // final sentence =
   //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
+  final dio = Dio();
   final practiceDoPath = '/bookmark/practice-do';
   final homePagePath = '/';
   final messages = [
@@ -101,19 +102,18 @@ class _PracticeResultPageState extends State<PracticeResultPage>
   }
 
   Future<Result> fetchResult() async {
-    var url = 'http://10.18.232.5:3000/function';
+    var url = 'http://192.168.35.233:8080/evaluate';
 
     File vidFile = File(file.path);
-    List<int> videoBytes = await vidFile.readAsBytes();
-    String base64Video = base64Encode(videoBytes);
-
-    final response = await http.post(Uri.parse(url), body: {
+    FormData formData = FormData.fromMap({
       "videoId": sentence.id.toString(),
-      "body": base64Video,
+      "body": await MultipartFile.fromFile(vidFile.path),
     });
 
-    if (response.statusCode == 201) {
-      return Result.tmpJson(json.decode(response.body));
+    final response = await dio.post(url, data: formData);
+
+    if (response.statusCode == 200) {
+      return Result.tmpJson(json.decode(response.data));
     } else {
       throw Exception('Cannot get results.');
     }
