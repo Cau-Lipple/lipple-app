@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
-import 'package:lipple/widgets/camera_widget.dart';
 
 class PracticeDoVidPage extends StatefulWidget {
   const PracticeDoVidPage({required this.sentence, super.key});
@@ -16,9 +15,6 @@ class PracticeDoVidPage extends StatefulWidget {
 }
 
 class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
-  // final sentence =
-  //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
-
   late SentencePractice sentence;
   CameraController? _controller;
   bool _isCameraInitialized = false;

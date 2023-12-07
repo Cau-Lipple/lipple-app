@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lipple/bookmark_page.dart';
 import 'package:lipple/home_page.dart';
 import 'package:lipple/interfaces/category_interface.dart';
 import 'package:lipple/interfaces/sentence_practice_interface.dart';
-import 'package:lipple/practice_do_page.dart';
 import 'package:lipple/practice_do_vid_page.dart';
 import 'package:lipple/practice_page.dart';
 import 'package:lipple/practice_result_page.dart';
@@ -176,86 +173,6 @@ final goRouter = GoRouter(
     ),
   ],
 );
-
-// class BaseNavigationBar extends StatefulWidget {
-//   const BaseNavigationBar({super.key});
-//
-//   @override
-//   State<BaseNavigationBar> createState() => _BaseNavigationBarState();
-// }
-//
-// class _BaseNavigationBarState extends State<BaseNavigationBar> {
-//   int currentPageIndex = 0;
-//   static const List<Destination> allDestinations = <Destination>[
-//     Destination(0, '홈', CustomIcons.home),
-//     Destination(1, '문장연습', CustomIcons.lnr_bubble),
-//     Destination(2, '즐겨찾기', CustomIcons.star),
-//     Destination(3, '환경설정', CustomIcons.cog),
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       bottomNavigationBar: Container(
-//         decoration: const BoxDecoration(boxShadow: [
-//           BoxShadow(color: Colors.black12, blurRadius: 5),
-//         ]),
-//         child: NavigationBar(
-//             onDestinationSelected: (int index) {
-//               setState(() {
-//                 currentPageIndex = index;
-//               });
-//             },
-//             indicatorColor: const Color(0x00000000),
-//             surfaceTintColor: Colors.white,
-//             selectedIndex: currentPageIndex,
-//             destinations: allDestinations.map((Destination destination) {
-//               return NavigationDestination(
-//                   selectedIcon: Icon(
-//                     destination.icon,
-//                     color: const Color(0xFF22BB66),
-//                     shadows: const [
-//                       Shadow(
-//                         color: Color(0xFF22BB66),
-//                         offset: Offset(0, 1),
-//                         blurRadius: 5.0,
-//                       )
-//                     ],
-//                   ),
-//                   icon: Icon(
-//                     destination.icon,
-//                     shadows: const [
-//                       Shadow(
-//                         color: Color(0xFF938F99),
-//                         offset: Offset(0, 1),
-//                         blurRadius: 3.0,
-//                       )
-//                     ],
-//                   ),
-//                   label: destination.title);
-//             }).toList()),
-//       ),
-//       body: <Widget>[
-//         Container(
-//           color: Colors.red,
-//           alignment: Alignment.center,
-//           child: const Text('Page 1'),
-//         ),
-//         const EntireCategoryPage(),
-//         Container(
-//           color: Colors.blue,
-//           alignment: Alignment.center,
-//           child: const Text('Page 3'),
-//         ),
-//         Container(
-//           color: Colors.purple,
-//           alignment: Alignment.center,
-//           child: const Text('Page 4'),
-//         ),
-//       ][currentPageIndex],
-//     );
-//   }
-// }
 
 class Destination {
   const Destination(this.index, this.title, this.icon);

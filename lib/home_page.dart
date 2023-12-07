@@ -29,29 +29,6 @@ class _HomePageState extends State<HomePage> {
   late SentencePractice? randomBookmarkSentences;
   bool initialized = false;
 
-  // static List<SentencePractice> allSentences = <SentencePractice>[
-  //   SentencePractice(
-  //     id: 0,
-  //     name: '이건 즐겨찾기 리스트에 들어갈 목적으로 작성된 문장이야.',
-  //     category: Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
-  //   ),
-  //   SentencePractice(
-  //       id: 1,
-  //       name: '여기에 카테고리를 적어두면 좀 좋을 것 같은데.',
-  //       category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
-  //   SentencePractice(
-  //       id: 2,
-  //       name: '메인에서도 필요하고... 근데 아직 설계 확정 안됨.',
-  //       category: Category('일, 직장, 직업', Image.asset('assets/images/work.png'))),
-  // ];
-  // static List<Category> allCategories = <Category>[
-  //   Category('일, 직장, \n직업', Image.asset('assets/images/work.png')),
-  //   Category('휴가', Image.asset('assets/images/vacation.png')),
-  //   Category('교통수단', Image.asset('assets/images/transport.png')),
-  //   Category('반려동물', Image.asset('assets/images/pet.png')),
-  //   Category('문화, 예술', Image.asset('assets/images/art.png')),
-  // ];
-
   Future<void> initializeSentence(int randBookmarkSentenceId) async {
     allSentences = await fetchSentence();
     int randNum = Random().nextInt(allSentences.length);
@@ -595,44 +572,6 @@ class _HomePageState extends State<HomePage> {
                       : const Center(
                           child: CircularProgressIndicator(),
                         ),
-                  // ListView(
-                  //   shrinkWrap: true,
-                  //   padding: EdgeInsets.zero,
-                  //   children:
-                  //       allSentences.map((SentencePractice sentencePractice) {
-                  //     return Container(
-                  //       decoration: const BoxDecoration(
-                  //         border: Border(
-                  //           bottom: BorderSide(color: Color(0xFFC1C9BF)),
-                  //         ),
-                  //       ),
-                  //       child: ListTile(
-                  //         title: Text(
-                  //           sentencePractice.category?.title ?? '',
-                  //           style: const TextStyle(
-                  //               fontSize: 11, color: Color(0xFF078043)),
-                  //         ),
-                  //         subtitle: Padding(
-                  //           padding: const EdgeInsets.only(top: 5.0),
-                  //           child: Text(
-                  //             sentencePractice.name,
-                  //             style: const TextStyle(
-                  //                 fontSize: 14, fontWeight: FontWeight.w500),
-                  //             maxLines: 1,
-                  //             overflow: TextOverflow.fade,
-                  //             softWrap: false,
-                  //           ),
-                  //         ),
-                  //         trailing: const Icon(
-                  //           Icons.arrow_forward_ios_rounded,
-                  //           size: 17,
-                  //           color: Colors.grey,
-                  //         ),
-                  //         onTap: () {},
-                  //       ),
-                  //     );
-                  //   }).toList(),
-                  // ),
                 )
               ],
             ),

@@ -19,8 +19,6 @@ class PracticePage extends StatefulWidget {
 }
 
 class _PracticePageState extends State<PracticePage> {
-  // final sentence =
-  //     const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를\n컴퓨터 오류로 날렸어.');
   late SentencePractice sentence;
   VideoPlayerController? _controller;
   bool isBookmark = false;
@@ -29,8 +27,6 @@ class _PracticePageState extends State<PracticePage> {
   Future<String> fetchVideoUrl() async {
     var url =
         'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/${Uri.encodeComponent(sentence.id.toString())}';
-    // var url =
-    //     'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/videos/1';
 
     final response = await http.get(Uri.parse(url));
 
@@ -45,11 +41,6 @@ class _PracticePageState extends State<PracticePage> {
 
   Future<bool> setBookmark() async {
     return context.read<BookmarkProvider>().bookmarks.contains(sentence.id);
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    List<String> dbList = (prefs.getStringList('bookmark') ?? []);
-    List<int> originalList = dbList.map((i) => int.parse(i)).toList();
-    return originalList.contains(sentence.id);
   }
 
   @override

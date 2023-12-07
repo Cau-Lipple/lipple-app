@@ -19,13 +19,6 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
-  // static List<SentencePractice> allSentences = <SentencePractice>[
-  //   const SentencePractice(id: 0, name: '오늘도 좋은 하루 보내길 바라!'),
-  //   const SentencePractice(id: 1, name: '집에 가다가 너무 귀여운 검은 고양이를 만났어.'),
-  //   const SentencePractice(id: 2, name: '내일까지 제출해야 할 과제가 있어서 안 돼.'),
-  //   const SentencePractice(id: 3, name: '오늘 내가 제일 좋아하는 메뉴가 나온다!'),
-  // ];
-
   late List<SentencePractice> allSentences;
   final String practicePath = '/bookmark/practice';
   late SentencePractice? randomSentence;
@@ -200,72 +193,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   : const Center(
                       child: CircularProgressIndicator(),
                     ),
-              // ListView(
-              //   padding: EdgeInsets.zero,
-              //   children: bookmarkSentences.map((SentencePractice sentence) {
-              //     return Container(
-              //       decoration: const BoxDecoration(
-              //         border: Border(
-              //           bottom: BorderSide(color: Color(0xFFC1C9BF)),
-              //         ),
-              //       ),
-              //       child: ListTile(
-              //         title: Text(
-              //           sentence.name,
-              //           maxLines: 1,
-              //           overflow: TextOverflow.fade,
-              //           softWrap: false,
-              //         ),
-              //         trailing: const Icon(
-              //           Icons.arrow_forward_ios_rounded,
-              //           size: 17,
-              //           color: Colors.grey,
-              //         ),
-              //         onTap: () => context.go(practicePath, extra: sentence),
-              //       ),
-              //     );
-              //   }).toList(),
-              // ),
-              // child: FutureBuilder<List<SentencePractice>>(
-              //   future: allSentences,
-              //   builder: (BuildContext context,
-              //       AsyncSnapshot<List<SentencePractice>> snapshot) {
-              //     if (snapshot.connectionState == ConnectionState.waiting) {
-              //       return const Center(child: CircularProgressIndicator());
-              //     } else if (snapshot.hasError) {
-              //       return Text('Error: ${snapshot.error}');
-              //     } else {
-              //       List<SentencePractice> sentences = snapshot.data ?? [];
-              //       return ListView(
-              //         padding: EdgeInsets.zero,
-              //         children: sentences.map((SentencePractice sentence) {
-              //           return Container(
-              //             decoration: const BoxDecoration(
-              //               border: Border(
-              //                 bottom: BorderSide(color: Color(0xFFC1C9BF)),
-              //               ),
-              //             ),
-              //             child: ListTile(
-              //               title: Text(
-              //                 sentence.name,
-              //                 maxLines: 1,
-              //                 overflow: TextOverflow.fade,
-              //                 softWrap: false,
-              //               ),
-              //               trailing: const Icon(
-              //                 Icons.arrow_forward_ios_rounded,
-              //                 size: 17,
-              //                 color: Colors.grey,
-              //               ),
-              //               onTap: () =>
-              //                   context.go(practicePath, extra: sentence),
-              //             ),
-              //           );
-              //         }).toList(),
-              //       );
-              //     }
-              //   },
-              // ),
             ),
           )
         ],

@@ -17,9 +17,6 @@ class BookmarkProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> dbList = _bookmarks.map((i) => i.toString()).toList();
     await prefs.setStringList('bookmarks', dbList);
-    print('add bookmarks');
-    print(_bookmarks);
-    print(dbList);
     notifyListeners();
   }
 
@@ -30,9 +27,6 @@ class BookmarkProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> dbList = _bookmarks.map((i) => i.toString()).toList();
     await prefs.setStringList('bookmarks', dbList);
-    print('remove bookmarks');
-    print(_bookmarks);
-    print(dbList);
     notifyListeners();
   }
 }

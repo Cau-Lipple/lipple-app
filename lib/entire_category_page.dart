@@ -17,14 +17,6 @@ class _EntireCategoryPageState extends State<EntireCategoryPage> {
   final String detailsPath = '/category/specific';
   late Future<List<Category>> allCategories;
 
-  // static List<Category> allCategories = <Category>[
-  //   Category('일, 직장, 직업', Image.asset('assets/images/work.png')),
-  //   Category('휴가', Image.asset('assets/images/vacation.png')),
-  //   Category('교통수단', Image.asset('assets/images/transport.png')),
-  //   Category('반려동물', Image.asset('assets/images/pet.png')),
-  //   Category('문화, 예술', Image.asset('assets/images/art.png')),
-  // ];
-
   Future<List<Category>> fetchCategory() async {
     var url =
         'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/category';

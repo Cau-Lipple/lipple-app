@@ -23,12 +23,6 @@ class _SpecificCategoryPageState extends State<SpecificCategoryPage> {
   final String practicePath = '/bookmark/practice';
   bool initialized = false;
 
-  // static List<SentencePractice> allSentences = <SentencePractice>[
-  //   const SentencePractice(id: 0, name: '어제 힘들게 작성한 보고서를 컴퓨터 오류로 날렸어.'),
-  //   const SentencePractice(id: 1, name: '이건 문장 테스트 리스트에 들어갈 문장이야.'),
-  //   const SentencePractice(id: 2, name: '오늘도 야근해야할 것 같아.'),
-  // ];
-
   Future<List<SentencePractice>> fetchSentence() async {
     var url =
         'https://9c83ph95ma.execute-api.ap-northeast-2.amazonaws.com/beta/category/${Uri.encodeComponent(category.title)}';
