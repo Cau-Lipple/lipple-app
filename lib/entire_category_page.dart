@@ -53,16 +53,16 @@ class _EntireCategoryPageState extends State<EntireCategoryPage> {
               bottom: Radius.circular(20),
             ),
           ),
-          child: SafeArea(
+          child: const SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
               child: SizedBox(
                 height: 90,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       '전체 카테고리',
                       style: TextStyle(
                         fontSize: 22,
@@ -70,11 +70,6 @@ class _EntireCategoryPageState extends State<EntireCategoryPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(
-                      width: 150,
-                      height: 35,
-                      child: MyElevatedButton('랜덤 학습하기', () {}),
-                    )
                   ],
                 ),
               ),
