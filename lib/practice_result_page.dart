@@ -102,7 +102,7 @@ class _PracticeResultPageState extends State<PracticeResultPage>
   }
 
   Future<Result> fetchResult() async {
-    var url = 'http://192.168.35.233:8080/evaluate';
+    var url = 'http://10.210.60.160:8080/evaluate';
 
     File vidFile = File(file.path);
     FormData formData = FormData.fromMap({
@@ -111,9 +111,8 @@ class _PracticeResultPageState extends State<PracticeResultPage>
     });
 
     final response = await dio.post(url, data: formData);
-
     if (response.statusCode == 200) {
-      return Result.tmpJson(json.decode(response.data));
+      return Result.fromJson(response.data);
     } else {
       throw Exception('Cannot get results.');
     }
@@ -300,7 +299,7 @@ class _PracticeResultPageState extends State<PracticeResultPage>
                       WidgetsBinding.instance.addPostFrameCallback(
                         (_) {
                           snackbarExecuted = true;
-                          int score = result.totalScore;
+                          double score = result.totalScore;
                           ScaffoldMessenger.of(context).showSnackBar(score > 70
                               ? SnackBarGreat(score)
                               : (score > 40
@@ -472,12 +471,9 @@ class _PracticeResultPageState extends State<PracticeResultPage>
                                     lineBarsData: [
                                       LineChartBarData(
                                         spots: [
-                                          FlSpot(0,
-                                              result.soundScore[0].toDouble()),
-                                          FlSpot(5,
-                                              result.soundScore[1].toDouble()),
-                                          FlSpot(10,
-                                              result.soundScore[2].toDouble()),
+                                          FlSpot(0, result.soundScore[0]),
+                                          FlSpot(5, result.soundScore[1]),
+                                          FlSpot(10, result.soundScore[2]),
                                         ],
                                         isCurved: true,
                                         barWidth: 3,
@@ -508,12 +504,9 @@ class _PracticeResultPageState extends State<PracticeResultPage>
                                       ),
                                       LineChartBarData(
                                         spots: [
-                                          FlSpot(0,
-                                              result.videoScore[0].toDouble()),
-                                          FlSpot(5,
-                                              result.videoScore[1].toDouble()),
-                                          FlSpot(10,
-                                              result.videoScore[2].toDouble()),
+                                          FlSpot(0, result.videoScore[0]),
+                                          FlSpot(5, result.videoScore[1]),
+                                          FlSpot(10, result.videoScore[2]),
                                         ],
                                         isCurved: true,
                                         barWidth: 3,
@@ -543,9 +536,21 @@ class _PracticeResultPageState extends State<PracticeResultPage>
                                         color: const Color(0xFF008040),
                                       ),
                                     ],
-                                    lineTouchData: const LineTouchData(
+                                    lineTouchData: LineTouchData(
                                       touchTooltipData: LineTouchTooltipData(
                                         tooltipBgColor: Colors.black54,
+                                        getTooltipItems: (List<LineBarSpot>
+                                            touchedBarSpots) {
+                                          return touchedBarSpots.map((barSpot) {
+                                            return LineTooltipItem(
+                                                barSpot.y.toStringAsFixed(2),
+                                              TextStyle(
+                                                color: barSpot.bar.color,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            );
+                                          }).toList();
+                                        },
                                       ),
                                     ),
                                   ),

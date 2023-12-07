@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-SnackBar SnackBarGood(int score) {
+SnackBar SnackBarGood(double score) {
   return SnackBar(
     behavior: SnackBarBehavior.floating,
     duration: const Duration(seconds: 5),
@@ -32,7 +32,7 @@ SnackBar SnackBarGood(int score) {
           ),
         ),
         Text(
-          "$score점, 거의 다 왔어요!",
+          "${score.toStringAsFixed(2)}점, 거의 다 왔어요!",
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,

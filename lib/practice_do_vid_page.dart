@@ -170,7 +170,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 25),
+                      padding: const EdgeInsets.only(top: 10, bottom: 15),
                       child: Container(
                         height: 5.0,
                         width: 50.0,
@@ -195,8 +195,8 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(35)),
                                   child: SizedBox(
-                                    width: 370,
-                                    height: 420,
+                                    width: 350,
+                                    height: 400,
                                     child: _isCameraInitialized
                                         // ? CameraWidget(
                                         //     controller: _controller)
@@ -224,7 +224,7 @@ class _PracticeDoVidPageState extends State<PracticeDoVidPage> {
                               ],
                             ),
                             const SizedBox(
-                              height: 120,
+                              height: 105,
                             )
                           ],
                         ),
